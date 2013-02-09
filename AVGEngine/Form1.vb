@@ -10,7 +10,7 @@
         Dim t As New OAEScriptEngine(path + "main.ini", path + "script.ini")
         'output.init_main(path + "main.ini")
         'a = output.GetAttr("window", "window", "bgImage")
-        Debug.Write(a)
-
+        'Debug.Write(a)
+        t.Preproccess()
     End Sub
 End Class
