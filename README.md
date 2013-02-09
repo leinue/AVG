@@ -9,4 +9,4 @@ It's written in Visual Basic .NET.
   It's not completed yet.
 </p>
 
-![Logo](Logo.git)
+![Logo](Logo.gif)
