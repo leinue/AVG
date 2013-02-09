@@ -9,7 +9,7 @@
         Dim output As New OAEScriptEngine
         Dim a As String
         output.init_main(path + "main.ini")
-        a = output.GetAttr("window", "window", "bgImage")
+        'a = output.GetAttr("window", "window", "bgImage")
         Debug.Write(a)
     End Sub
 End Class

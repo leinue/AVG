@@ -1,14 +1,5 @@
 ﻿Public Class OAEScriptEngine
-    Dim path As String
-    'GetAttr("item","item1","locX")
-    Structure item
-        Dim type As String
-        Dim locX As Integer
-        Dim locY As Integer
-        Dim height As Integer
-        Dim width As Integer
-        Dim action As String
-    End Structure
+    Dim ScriptPath As String
     Private Declare Function GetPrivateProfileString Lib "kernel32" Alias "GetPrivateProfileStringA" (ByVal lpApplicationName As String, ByVal lpKeyName As String, ByVal lpDefault As String, ByVal lpReturnedString As String, ByVal nSize As Int32, ByVal lpFileName As String) As Int32
     Private Declare Function WritePrivateProfileString Lib "kernel32" Alias "WritePrivateProfileStringA" (ByVal lpApplicationName As String, ByVal lpKeyName As String, ByVal lpString As String, ByVal lpFileName As String) As Int32
     '定义读取配置文件函数
@@ -22,16 +13,19 @@
         WriteINI = WritePrivateProfileString(Section, AppName, lpDefault, FileName)
     End Function
     Public Sub init_main(ByVal cpath As String) '初始化main.ini文件的目录
-        path = cpath
+        ScriptPath = cpath
     End Sub
-    Public Function GetAttr(ByVal itemName As String, ByVal itemSection As String, ByVal itemDefault As String)
-        '获取main.ini文件各段属性.如果itemName填写的window那么就获取window段里的属性.
-        '如果填写的是item就把itemName和itemSection结合起来,如寻找[item-item1]
-        If itemName <> "" Then
-            GetAttr = GetINI(itemName + "-" + itemSection, itemDefault, "", path)
-        End If
-        If itemName = "window" Then
-            GetAttr = GetINI(itemSection, itemDefault, "", path)
-        End If
+    Public Function GetWindow(ByVal WindowSectionName As String) As OAEWindow '获得类型为window的各项属性
+        GetWindow.bgImage = GetINI(WindowSectionName, "bgImage", "", ScriptPath)
+        GetWindow.bgbgMusic = GetINI(WindowSectionName, "bgMusic", "", ScriptPath)
+        GetWindow.itemList = GetINI(WindowSectionName, "itemList", "", ScriptPath)
+    End Function
+    Public Function GetItem(ByVal ItemSectionName As String) As OAEItem
+        GetItem.type = GetINI(ItemSectionName, "type", "", ScriptPath)
+        GetItem.action = GetINI(ItemSectionName, "action", "", ScriptPath)
+        GetItem.height = GetINI(ItemSectionName, "height", "", ScriptPath)
+        GetItem.locX = GetINI(ItemSectionName, "locX", "", ScriptPath)
+        GetItem.locY = GetINI(ItemSectionName, "locY", "", ScriptPath)
+        GetItem.width = GetINI(ItemSectionName, "width", "", ScriptPath)
     End Function
 End Class
