@@ -8,10 +8,10 @@ Imports System.Runtime.InteropServices
 
 ' 查看程序集特性的值
 
-<Assembly: AssemblyTitle("ACGGAMEINTERPRETER")> 
+<Assembly: AssemblyTitle("AVGEngine")> 
 <Assembly: AssemblyDescription("")> 
 <Assembly: AssemblyCompany("")> 
-<Assembly: AssemblyProduct("ACGGAMEINTERPRETER")> 
+<Assembly: AssemblyProduct("AVGEngine")> 
 <Assembly: AssemblyCopyright("Copyright ©  2013")> 
 <Assembly: AssemblyTrademark("")> 
 

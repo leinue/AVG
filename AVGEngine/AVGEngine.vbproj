@@ -8,9 +8,9 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{E6295CD0-AFE7-41FC-9353-30DB67A5D0B8}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <StartupObject>ACGGAMEINTERPRETER.My.MyApplication</StartupObject>
-    <RootNamespace>ACGGAMEINTERPRETER</RootNamespace>
-    <AssemblyName>ACGGAMEINTERPRETER</AssemblyName>
+    <StartupObject>AVGEngine.My.MyApplication</StartupObject>
+    <RootNamespace>AVGEngine</RootNamespace>
+    <AssemblyName>AVGEngine</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>WindowsForms</MyType>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
@@ -23,7 +23,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>ACGGAMEINTERPRETER.xml</DocumentationFile>
+    <DocumentationFile>AVGEngine.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
@@ -33,7 +33,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>ACGGAMEINTERPRETER.xml</DocumentationFile>
+    <DocumentationFile>AVGEngine.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
