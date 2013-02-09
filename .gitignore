@@ -1,1 +1,4 @@
 *.exe
+*.suo
+/obj
+/bin
