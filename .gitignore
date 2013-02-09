@@ -1,4 +1,7 @@
 *.exe
+
 *.suo
+
 obj/
+
 bin/

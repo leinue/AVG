@@ -1,9 +1,20 @@
 ﻿Public Class OAECtrl
-    Dim ScriptFilePath As String = Application.StartupPath + "config\main.ini"
+    Dim ScriptFilePath As String = Application.StartupPath + "script\main.ini"
     Dim ScriptI As New OAEScriptEngine
-    Public Function Init(ByVal ScriptFile As String) As Integer
+    Dim InitInfo As OAEInitInfo
+    Public Sub Init(ByVal ScriptFile As String, ByVal GameForm As Form)
+        ScriptI = New OAEScriptEngine(ScriptFilePath)
+        InitInfo = ScriptI.GetInitInfo()
+        If InitInfo.width > 0 Then
+            GameForm.Width = InitInfo.width
+        End If
+        If InitInfo.height > 0 Then
+            GameForm.Height = InitInfo.height
+        End If
+    End Sub
 
-        Return 1
-    End Function
+    Public Sub Main()
+
+    End Sub
 
 End Class
