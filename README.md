@@ -1,0 +1,4 @@
+AVG
+===
+
+avg's intrepretring
