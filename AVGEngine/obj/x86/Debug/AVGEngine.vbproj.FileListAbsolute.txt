@@ -1,0 +1,11 @@
+F:\Users\xieyang\AVG\AVGEngine\bin\Debug\AVGEngine.exe
+F:\Users\xieyang\AVG\AVGEngine\bin\Debug\AVGEngine.pdb
+F:\Users\xieyang\AVG\AVGEngine\bin\Debug\AVGEngine.xml
+F:\Users\xieyang\AVG\AVGEngine\obj\x86\Debug\ResolveAssemblyReference.cache
+F:\Users\xieyang\AVG\AVGEngine\obj\x86\Debug\AVGEngine.Form1.resources
+F:\Users\xieyang\AVG\AVGEngine\obj\x86\Debug\AVGEngine.Resources.resources
+F:\Users\xieyang\AVG\AVGEngine\obj\x86\Debug\GenerateResource.read.1.tlog
+F:\Users\xieyang\AVG\AVGEngine\obj\x86\Debug\GenerateResource.write.1.tlog
+F:\Users\xieyang\AVG\AVGEngine\obj\x86\Debug\AVGEngine.exe
+F:\Users\xieyang\AVG\AVGEngine\obj\x86\Debug\AVGEngine.xml
+F:\Users\xieyang\AVG\AVGEngine\obj\x86\Debug\AVGEngine.pdb
