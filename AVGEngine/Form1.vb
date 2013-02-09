@@ -2,12 +2,11 @@
     Dim path As String
     Const script_init = "width|height"
     Const script_window = "bgImage|bgMusic|itemList"
-    'GetAttr("item","item1","locX")
     Private Sub Form1_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        path = Application.StartupPath + "config\script.ini"
+        path = Application.StartupPath + "config\"
     End Sub
     Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button1.Click
-        Dim io As iniio
-
+        Dim output As OAEScriptEngine
+        output.init_main(path + "main.ini")
     End Sub
 End Class
