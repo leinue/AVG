@@ -25,6 +25,13 @@
         path = cpath
     End Sub
     Public Function GetAttr(ByVal itemName As String, ByVal itemSection As String, ByVal itemDefault As String)
-        'GetINI(itemName + itemSection, itemDefault, , path)
+        '获取main.ini文件各段属性.如果itemName填写的window那么就获取window段里的属性.
+        '如果填写的是item就把itemName和itemSection结合起来,如寻找[item-item1]
+        If itemName <> "" Then
+            GetAttr = GetINI(itemName + "-" + itemSection, itemDefault, "", path)
+        End If
+        If itemName = "window" Then
+            GetAttr = GetINI(itemSection, itemDefault, "", path)
+        End If
     End Function
 End Class
