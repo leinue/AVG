@@ -1,4 +1,5 @@
 ﻿Public Class OAECtrl
+<<<<<<< HEAD
     Dim ScriptFilePath As String = Application.StartupPath + "script\main.ini"
     Dim ScriptI As New OAEScriptEngine
     Dim InitInfo As OAEInitInfo
