@@ -1,22 +1,21 @@
 ﻿Public Class OAECtrl
     Structure InDisplayItem
         Dim Item As OAEItem
-        Dim ItemStatus As String
-        Dim LastDrawStatus As String
+        Dim ItemStatus As String 'Such as 'Normal','Hover','Click',etc.
+        Dim LastDrawStatus As String 'Status of the item during the lastest drawing process.
     End Structure
     Structure ImageInfo
         Dim Image As Image
-        Dim ID As String
+        Dim ID As String 'A tag to describe this image.
     End Structure
 
-    Dim ScriptFilePath As String = Application.StartupPath + "script\main.ini"
+    Dim ScriptFilePath As String = Application.StartupPath + "script\script.ini"
     Dim ScriptI As OAEScriptEngine
     Dim InitInfo As OAEInitInfo
     Dim MusicPlayer As System.Media.SoundPlayer
-    Dim gForm As Form
-    Dim DisplayedItems() As Graphics
-    Dim ItemList() As InDisplayItem
-    Dim imageList() As ImageInfo
+    Dim gForm As Form 'The form to draw.
+    Dim ItemList() As InDisplayItem 'A list of the items which are displaying on the window.
+    Dim imageList() As ImageInfo 'All Image resources.
     Dim g As Graphics
 
     Public Sub Init(ByVal ScriptFile As String, ByVal GameForm As Form)
@@ -47,7 +46,7 @@
             MusicPlayer.PlayLooping()
         End If
         If Window.bgImage <> "" Then
-            GameForm.BackgroundImage = System.Drawing.Image.FromFile(Window.bgImage)
+            gForm.BackgroundImage = System.Drawing.Image.FromFile(Window.bgImage)
         End If
         If Window.itemList <> "" Then
             ItemNameList = Window.itemList.Split(",")
@@ -81,14 +80,19 @@
             ReDim Preserve imageList(2 * UBound(imageList))
         End If
 
+        Dim rImage As Image
+
         If Item.ItemStatus = "Normal" Then
-            imageList(LBound(imageList)) = ScriptI.getImageRes(Item.Item.normalImage)
+            imageList(LBound(imageList)).Image = ScriptI.getImageRes(Item.Item.normalImage)
+            imageList(LBound(imageList)).ID = Item.Item.name + "-" + "Normal"
             Return imageList(LBound(imageList)).Image
         ElseIf Item.ItemStatus = "Hover" Then
-            imageList(LBound(imageList)) = ScriptI.getImageRes(Item.Item.hoverImage)
+            imageList(LBound(imageList)).Image = ScriptI.getImageRes(Item.Item.hoverImage)
+            imageList(LBound(imageList)).ID = Item.Item.name + "-" + "Hover"
             Return imageList(LBound(imageList)).Image
         ElseIf Item.ItemStatus = "Click" Then
-            imageList(LBound(imageList)) = ScriptI.getImageRes(Item.Item.clickImage)
+            imageList(LBound(imageList)).Image = ScriptI.getImageRes(Item.Item.clickImage)
+            imageList(LBound(imageList)).ID = Item.Item.name + "-" + "Click"
             Return imageList(LBound(imageList)).Image
         End If
 
