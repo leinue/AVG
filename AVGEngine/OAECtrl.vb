@@ -83,8 +83,10 @@
         Dim rImage As Image
 
         If Item.ItemStatus = "Normal" Then
+
             imageList(LBound(imageList)).Image = ScriptI.getImageRes(Item.Item.normalImage)
             imageList(LBound(imageList)).ID = Item.Item.name + "-" + "Normal"
+
             Return imageList(LBound(imageList)).Image
         ElseIf Item.ItemStatus = "Hover" Then
             imageList(LBound(imageList)).Image = ScriptI.getImageRes(Item.Item.hoverImage)

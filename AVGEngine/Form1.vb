@@ -7,10 +7,9 @@
     End Sub
     Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button1.Click
         Dim a As String
-        Dim t As New OAEScriptEngine(path + "main.ini", path + "script.ini")
+        Dim t As New OAEScriptEngine(path + "script.ini")
         'output.init_main(path + "main.ini")
         'a = output.GetAttr("window", "window", "bgImage")
         'Debug.Write(a)
-        t.Preproccess()
     End Sub
 End Class
