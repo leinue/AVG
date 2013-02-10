@@ -6,8 +6,12 @@
     Dim height As Integer
     Dim width As Integer
     Dim action As String
+    Dim NormalImage As String
+    Dim HoverImage As String
+    Dim ClickImage As String
 End Structure
 Public Structure OAEWindow
+    Dim name As String
     Dim bgImage As String
     Dim bgMusic As String
     Dim itemList As String

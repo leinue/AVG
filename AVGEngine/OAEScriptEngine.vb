@@ -34,20 +34,20 @@ Public Class OAEScriptEngine
         iniText_Script.Trim()
         Deal = Split(iniText_Script, Chr(13) + Chr(10))
         For i = 0 To UBound(Deal)
-            WhetherFindWAT = InStr()
+            'WhetherFindWAT = InStr()
         Next
         IncludedName = Split(iniText_Script, "<include>")
         CountWAttr = UBound(IncludedName)
         TextTrimed = (iniText_Script + iniText_Main).TrimEnd()
     End Sub
-    Sub New(ByVal cpath As String, ByVal ipath As String) '构造函数
-        MainPath = cpath '脚本目录
-        ScriptPath = ipath '初始化ini目录
+    Sub New(ByVal path As String) '构造函数
+        MainPath = path '脚本目录
     End Sub
     Public Function GetWindow(ByVal WindowSectionName As String) As OAEWindow '获得类型为window的各项属性
         GetWindow.bgImage = GetINI("Window" + WindowSectionName, "bgImage", "", MainPath)
         GetWindow.bgMusic = GetINI("Window" + WindowSectionName, "bgMusic", "", MainPath)
         GetWindow.itemList = GetINI("Window" + WindowSectionName, "itemList", "", MainPath)
+        GetWindow.name = GetINI("Window" + WindowSectionName, "name", "", MainPath)
     End Function
     Public Function GetItem(ByVal ItemSectionName As String) As OAEItem '获得类型为item的各项属性
         GetItem.type = GetINI("item-" + ItemSectionName, "type", "", MainPath)
@@ -56,9 +56,37 @@ Public Class OAEScriptEngine
         GetItem.locX = GetINI("item-" + ItemSectionName, "locX", "", MainPath)
         GetItem.locY = GetINI("item-" + ItemSectionName, "locY", "", MainPath)
         GetItem.width = GetINI("item-" + ItemSectionName, "width", "", MainPath)
+        GetItem.name = GetINI("item-" + ItemSectionName, "name", "", MainPath)
+        GetItem.NormalImage = GetINI("item-" + ItemSectionName, "NormalImage", "", MainPath)
+        GetItem.HoverImage = GetINI("item-" + ItemSectionName, "HoverImage", "", MainPath)
+        GetItem.ClickImage = GetINI("item-" + ItemSectionName, "ClickImage", "", MainPath)
     End Function
     Public Function GetInitInfo() As OAEInitInfo
-        GetInitInfo.height = GetINI("init", "height", "", ScriptPath)
-        GetInitInfo.width = GetINI("init", "width", "", ScriptPath)
+        GetInitInfo.height = GetINI("init", "height", "", MainPath)
+        GetInitInfo.width = GetINI("init", "width", "", MainPath)
+    End Function
+    Function GetImageRes(ByVal res As String) As Image
+        'image(bgImage)->image-bgImage
+        Dim ImagePath As String, IfImage() As String
+        res = Replace(res, "(", "-")
+        res = Replace(res, ")", "")
+        IfImage = Split(res, "-")
+        If (IfImage(1) = "image") Then
+            ImagePath = GetINI(res, "path", "", MainPath)
+            Return Image.FromFile(ImagePath)
+        Else
+            Throw New Exception("Image resources type unmatch:" + IfImage(1))
+        End If
+    End Function
+    Function GetSoundPath(ByVal res As String) As String
+        Dim IfSound() As String
+        res = Replace(res, "(", "-")
+        res = Replace(res, ")", "")
+        IfSound = Split(res, "-")
+        If IfSound(1) = "sound" Then
+            Return GetINI(res, "path", "", MainPath)
+        Else
+            Throw New Exception("Image resources type unmatch:" + IfSound(1))
+        End If
     End Function
 End Class

@@ -82,7 +82,7 @@
         End If
 
         If Item.ItemStatus = "Normal" Then
-            imageList(LBound(imageList)) = ScriptI.getImageRes(Item.Item.normalImage)
+            imageList(LBound(imageList)) = ScriptI.GetImageRes(Item.Item.NormalImage)
             Return imageList(LBound(imageList)).Image
         ElseIf Item.ItemStatus = "Hover" Then
             imageList(LBound(imageList)) = ScriptI.getImageRes(Item.Item.hoverImage)
