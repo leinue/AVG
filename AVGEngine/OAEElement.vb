@@ -1,4 +1,5 @@
 ﻿Public Structure OAEItem
+    Dim name As String
     Dim type As String
     Dim locX As Integer
     Dim locY As Integer
