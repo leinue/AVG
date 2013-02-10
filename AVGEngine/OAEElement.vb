@@ -8,7 +8,7 @@
 End Structure
 Public Structure OAEWindow
     Dim bgImage As String
-    Dim bgbgMusic As String
+    Dim bgMusic As String
     Dim itemList As String
 End Structure
 Public Structure OAEInitInfo
