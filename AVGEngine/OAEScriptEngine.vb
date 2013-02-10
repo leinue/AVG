@@ -51,7 +51,6 @@ Public Class OAEScriptEngine
     End Function
     Public Function GetItem(ByVal ItemSectionName As String) As OAEItem '获得类型为item的各项属性
         GetItem.type = GetINI("item-" + ItemSectionName, "type", "", MainPath)
-        GetItem.action = GetINI("item-" + ItemSectionName, "action", "", MainPath)
         GetItem.height = GetINI("item-" + ItemSectionName, "height", "", MainPath)
         GetItem.locX = GetINI("item-" + ItemSectionName, "locX", "", MainPath)
         GetItem.locY = GetINI("item-" + ItemSectionName, "locY", "", MainPath)
@@ -60,6 +59,8 @@ Public Class OAEScriptEngine
         GetItem.NormalImage = GetINI("item-" + ItemSectionName, "NormalImage", "", MainPath)
         GetItem.HoverImage = GetINI("item-" + ItemSectionName, "HoverImage", "", MainPath)
         GetItem.ClickImage = GetINI("item-" + ItemSectionName, "ClickImage", "", MainPath)
+        GetItem.HoverAction = GetINI("item-" + ItemSectionName, "HoverAction", "", MainPath)
+        GetItem.ClickAction = GetINI("item-" + ItemSectionName, "ClickAction", "", MainPath)
     End Function
     Public Function GetInitInfo() As OAEInitInfo
         GetInitInfo.height = GetINI("init", "height", "", MainPath)
