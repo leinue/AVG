@@ -17,7 +17,7 @@
     Structure OAEFont
         Dim Font As Font
         Dim Shadow As OAEShadow
-        Public Color As Color
+        Dim Brush As SolidBrush
     End Structure
 
     Structure OAEShadow
@@ -175,7 +175,7 @@
             GetFont.Shadow.EnableShawdow = False
         End If
         GetFont.Shadow.ShadowOffset = CInt(Attrs(5))
-        GetFont.Color = GetColorFromCode(Attrs(3), CInt(Attrs(6)))
+        GetFont.Brush = New SolidBrush(GetColorFromCode(Attrs(3), CInt(Attrs(6))))
 
     End Function
 
