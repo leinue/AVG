@@ -14,6 +14,11 @@
         Dim ID As String 'A tag to describe this image.
     End Structure
 
+    Structure FontInfo
+        Dim Font As OAEFont
+        Dim ID As String 'The same to above
+    End Structure
+
     Structure OAEFont
         Dim Font As Font
         Dim Shadow As OAEShadow
@@ -33,6 +38,7 @@
     Dim gForm As Form 'The form to draw.
     Dim ItemList() As InDisplayItem 'A list of the items which are displaying on the window.
     Dim imageList() As ImageInfo 'All Image resources.
+    Dim fontList() As FontInfo
     Dim g As Graphics
 
     '---------Internal Function---------
@@ -81,6 +87,8 @@
         End If
     End Sub
 
+    '---------Function About Drawing---------
+
     Sub DrawItem(ByVal Item As InDisplayItem)
         If Item.Item.type = "Image" Then
             DrawImage(Item)
@@ -91,12 +99,7 @@
     End Sub
 
     Sub DrawText(ByVal Item As InDisplayItem)
-        Dim mFont As OAEFont
-
-        If Item.ItemStatus = "Normal" Then
-            mFont = GetFont(Item.Item.NormalFont)
-        End If
-
+        'g.DrawString(Item.Item.)
     End Sub
 
     Sub DrawImage(ByVal Item As InDisplayItem)
@@ -105,6 +108,8 @@
         g.DrawImage(image, Item.Item.locX, Item.Item.locY, Item.Item.locX + image.Width, Item.Item.locY + image.Width)
 
     End Sub
+
+    '---------Function About Image---------
 
     Function GetItemImage(ByVal Item As InDisplayItem) As Image
         For i As Integer = 0 To UBound(imageList)
@@ -137,7 +142,7 @@
         Return Nothing
     End Function
 
-    '---------Function About Font---------
+    '---------Function About Font&Text---------
     Function GetFont(ByVal Fontcodes As String) As OAEFont
         Dim FontCode() As String = Fontcodes.Split(";")
         Dim tempAttr() As String
@@ -204,6 +209,50 @@
         End If
 
         If IGNORE_ERROR = False Then Throw New Exception("Unknow fontstyle : " + Style)
+
+        Return Nothing
+    End Function
+
+    Function GetItemFont(ByVal Item As InDisplayItem) As OAEFont
+        For i As Integer = 0 To UBound(fontList)
+            fontList(i).ID = Item.Item.name + "-" + Item.ItemStatus
+            Return fontList(i).Font
+        Next
+
+        If UBound(fontList) - LBound(fontList) = 0 Then
+            ReDim Preserve fontList(2 * UBound(fontList))
+        End If
+
+        If Item.ItemStatus = "Normal" Then
+            fontList(LBound(fontList)).Font = GetFont(Item.Item.NormalFont)
+            fontList(LBound(fontList)).ID = Item.Item.name + "-" + "Normal"
+            Return fontList(LBound(fontList)).Font
+        ElseIf Item.ItemStatus = "Hover" Then
+            fontList(LBound(fontList)).Font = GetFont(Item.Item.NormalFont)
+            fontList(LBound(fontList)).ID = Item.Item.name + "-" + "Hover"
+            Return fontList(LBound(fontList)).Font
+        ElseIf Item.ItemStatus = "Click" Then
+            fontList(LBound(fontList)).Font = GetFont(Item.Item.NormalFont)
+            fontList(LBound(fontList)).ID = Item.Item.name + "-" + "Click"
+            Return fontList(LBound(fontList)).Font
+        End If
+
+        If IGNORE_ERROR = False Then Throw New Exception("Unknow event type : " + Item.ItemStatus)
+
+        Return Nothing
+    End Function
+
+    Function GetItemText(ByVal Item As InDisplayItem) As String
+        Dim wChar() As Char = {" ", Chr(34)}
+        If Item.ItemStatus = "Normal" Then
+            Return Item.Item.NormalText.Trim(wChar)
+        ElseIf Item.ItemStatus = "Hover" Then
+            Return Item.Item.HoverText.Trim(wChar)
+        ElseIf Item.ItemStatus = "Click" Then
+            Return Item.Item.ClickText.Trim(wChar)
+        End If
+
+        If IGNORE_ERROR = False Then Throw New Exception("Unknow event type : " + Item.ItemStatus)
 
         Return Nothing
     End Function
