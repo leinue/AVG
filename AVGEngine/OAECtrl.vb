@@ -37,8 +37,8 @@
     Dim MusicPlayer As System.Media.SoundPlayer ' To play sound.
     Dim gForm As Form 'The main game form to draw.
     Dim ItemList() As InDisplayItem 'A list of the items which are displaying on the window.
-    Dim imageList() As ImageInfo 'Cache Image resources. Clean while changing window.
-    Dim fontList() As FontInfo 'Cache Font.
+    Dim imageList(2) As ImageInfo 'Cache Image resources. Clean while changing window.
+    Dim fontList(2) As FontInfo 'Cache Font.
 
     Dim g As Graphics ' GDI+
 
@@ -70,7 +70,7 @@
         Dim ItemNameList() As String
 
         If Window.bgMusic <> "" Then
-            MusicPlayer.SoundLocation = Window.bgMusic
+            MusicPlayer.SoundLocation = Window.bgMusic ' **BUG: NullRef
             MusicPlayer.PlayLooping()
         End If
         If Window.bgImage <> "" Then
@@ -87,6 +87,7 @@
                 ItemList(i).Item = ScriptI.GetItem(ItemNameList(i)) ' Get Item Attributes.
                 ItemList(i).ItemStatus = "Normal"
                 ItemList(i).LastDrawStatus = ""
+                DrawItem(ItemList(i))
             Next
 
         End If
@@ -95,9 +96,9 @@
     '---------Function About Drawing---------
 
     Sub DrawItem(ByVal Item As InDisplayItem)
-        If Item.Item.type = "Image" Then
+        If Item.Item.type = "image" Then
             DrawImage(Item)
-        ElseIf Item.Item.type = "Text" Then
+        ElseIf Item.Item.type = "text" Then
             DrawText(Item)
         End If
 
@@ -113,7 +114,7 @@
 
     Sub DrawImage(ByVal Item As InDisplayItem)
         Dim image As Image = GetItemImage(Item)
-
+        Debug.WriteLine("Drawed")
         g.DrawImage(image, Item.Item.locX, Item.Item.locY, Item.Item.locX + image.Width, Item.Item.locY + image.Width)
 
     End Sub
@@ -122,8 +123,9 @@
 
     Function GetItemImage(ByVal Item As InDisplayItem) As Image
         For i As Integer = 0 To UBound(imageList)
-            imageList(i).ID = Item.Item.name + "-" + Item.ItemStatus
-            Return imageList(i).Image
+            If imageList(i).ID = Item.Item.name + "-" + Item.ItemStatus Then
+                Return imageList(i).Image
+            End If
         Next
 
         If UBound(imageList) - LBound(imageList) = 0 Then
