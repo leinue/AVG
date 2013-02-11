@@ -2,6 +2,7 @@
     'General Info
     Dim name As String
     Dim type As String
+    Dim visible As Boolean
 
 
     'Location Info
