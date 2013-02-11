@@ -31,7 +31,7 @@
     End Structure
 
     '---------Var---------
-    Dim ScriptFilePath As String = Application.StartupPath + "script\script.ini"
+    Dim ScriptFilePath As String = Application.StartupPath + "//script//script.ini"
     Dim ScriptI As OAEScriptEngine ' Script describer.
     Dim InitInfo As OAEInitInfo
     Dim MusicPlayer As System.Media.SoundPlayer ' To play sound.
@@ -43,7 +43,7 @@
     Dim g As Graphics ' GDI+
 
     '---------Internal Function---------
-    Public Sub Init(ByVal ScriptFile As String, ByVal GameForm As Form)
+    Public Sub Init(ByVal GameForm As Form)
         gForm = GameForm
 
         RegEvent() 'Register event to function here.
@@ -61,6 +61,7 @@
         g = Graphics.FromHwnd(gForm.Handle) 'Init GDI+
 
         ShowWindow("Main") 'All games start with the window Main.
+        gForm.Show()
 
     End Sub
 
@@ -73,7 +74,8 @@
             MusicPlayer.PlayLooping()
         End If
         If Window.bgImage <> "" Then
-            gForm.BackgroundImage = System.Drawing.Image.FromFile(Window.bgImage)
+            gForm.BackgroundImage = ScriptI.GetImageRes(Window.bgImage)
+            Debug.WriteLine("BgImage Loaded.")
         End If
 
         If Window.itemList <> "" Then 'Init Items.
