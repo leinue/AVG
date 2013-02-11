@@ -146,20 +146,22 @@
         For i As Integer = 0 To UBound(FontCode)
             tempAttr = FontCode(i).Split(":")
 
+            tempAttr(0) = tempAttr(0).Trim()
+
             If tempAttr(0) = "family" Then
-                Attrs(0) = tempAttr(1)
+                Attrs(0) = tempAttr(1).Trim()
             ElseIf tempAttr(0) = "size" Then
-                Attrs(1) = tempAttr(1)
+                Attrs(1) = tempAttr(1).Trim()
             ElseIf tempAttr(0) = "style" Then
-                Attrs(2) = tempAttr(1)
+                Attrs(2) = tempAttr(1).Trim()
             ElseIf tempAttr(0) = "color" Then
-                Attrs(3) = tempAttr(1)
+                Attrs(3) = tempAttr(1).Trim()
             ElseIf tempAttr(0) = "shadow" Then
                 Dim shadow() As String = tempAttr(1).Split(",")
-                Attrs(4) = shadow(0)
-                Attrs(5) = shadow(1)
+                Attrs(4) = shadow(0).Trim()
+                Attrs(5) = shadow(1).Trim()
             ElseIf tempAttr(0) = "transparent" Then
-                Attrs(6) = tempAttr(1)
+                Attrs(6) = tempAttr(1).Trim()
             Else
                 If IGNORE_ERROR = False Then Throw New Exception("Unknow fontcode Attr : " + tempAttr(0))
             End If
@@ -173,11 +175,20 @@
             GetFont.Shadow.EnableShawdow = False
         End If
         GetFont.Shadow.ShadowOffset = CInt(Attrs(5))
-        GetFont.Color = GetColorFromCode(Attrs(3))
+        GetFont.Color = GetColorFromCode(Attrs(3), CInt(Attrs(6)))
 
     End Function
 
-
+    Function GetColorFromCode(ByVal code As String, ByVal transparent As Integer) As Color
+        code = code.Trim()
+        If code.StartsWith("#") Then
+            Return Color.FromArgb(transparent, Convert.ToInt32(code.Substring(1, 2), 16), Convert.ToInt32(code.Substring(3, 2), 16), Convert.ToInt32(code.Substring(5, 2), 16))
+        Else
+            Dim mColor As Color = Color.FromName(code)
+            Return Color.FromArgb(transparent, mColor)
+            Return mColor
+        End If
+    End Function
 
     Function GetFontStyle(ByVal Style As String) As FontStyle
         If Style = "Regular" Then
