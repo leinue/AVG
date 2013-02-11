@@ -44,10 +44,10 @@ Public Class OAEScriptEngine
         MainPath = path '脚本目录
     End Sub
     Public Function GetWindow(ByVal WindowSectionName As String) As OAEWindow '获得类型为window的各项属性
-        GetWindow.bgImage = GetINI("Window" + WindowSectionName, "bgImage", "", MainPath)
-        GetWindow.bgMusic = GetINI("Window" + WindowSectionName, "bgMusic", "", MainPath)
-        GetWindow.itemList = GetINI("Window" + WindowSectionName, "itemList", "", MainPath)
-        GetWindow.name = GetINI("Window" + WindowSectionName, "name", "", MainPath)
+        GetWindow.bgImage = GetINI("window-" + WindowSectionName, "bgImage", "", MainPath)
+        GetWindow.bgMusic = GetINI("window-" + WindowSectionName, "bgMusic", "", MainPath)
+        GetWindow.itemList = GetINI("window-" + WindowSectionName, "itemList", "", MainPath)
+        GetWindow.name = GetINI("window-" + WindowSectionName, "name", "", MainPath)
     End Function
     Public Function GetItem(ByVal ItemSectionName As String) As OAEItem '获得类型为item的各项属性
         GetItem.type = GetINI("item-" + ItemSectionName, "type", "", MainPath)
