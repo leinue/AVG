@@ -51,10 +51,10 @@ Public Class OAEScriptEngine
     End Function
     Public Function GetItem(ByVal ItemSectionName As String) As OAEItem '获得类型为item的各项属性
         GetItem.type = GetINI("item-" + ItemSectionName, "type", "", MainPath)
-        GetItem.height = GetINI("item-" + ItemSectionName, "height", "", MainPath)
-        GetItem.locX = GetINI("item-" + ItemSectionName, "locX", "", MainPath)
-        GetItem.locY = GetINI("item-" + ItemSectionName, "locY", "", MainPath)
-        GetItem.width = GetINI("item-" + ItemSectionName, "width", "", MainPath)
+        GetItem.height = GetINI("item-" + ItemSectionName, "height", "0", MainPath)
+        GetItem.locX = GetINI("item-" + ItemSectionName, "locX", "0", MainPath)
+        GetItem.locY = GetINI("item-" + ItemSectionName, "locY", "0", MainPath)
+        GetItem.width = GetINI("item-" + ItemSectionName, "width", "0", MainPath)
         GetItem.name = GetINI("item-" + ItemSectionName, "name", "", MainPath)
         GetItem.NormalImage = GetINI("item-" + ItemSectionName, "NormalImage", "", MainPath)
         GetItem.HoverImage = GetINI("item-" + ItemSectionName, "HoverImage", "", MainPath)
@@ -80,11 +80,11 @@ Public Class OAEScriptEngine
         res = Replace(res, "(", "-")
         res = Replace(res, ")", "")
         IfImage = Split(res, "-")
-        If (IfImage(1) = "image") Then
+        If (IfImage(0) = "image") Then
             ImagePath = GetINI(res, "path", "", MainPath)
-            Return Image.FromFile(ImagePath)
+            Return Image.FromFile(Application.StartupPath + "//script//" + ImagePath)
         Else
-            Throw New Exception("Image resources type unmatch:" + IfImage(1))
+            Throw New Exception("Image resources type unmatch:" + IfImage(0))
         End If
     End Function
     Function GetSoundPath(ByVal res As String) As String
