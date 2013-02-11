@@ -72,6 +72,7 @@
         If Window.bgMusic <> "" Then
             MusicPlayer.SoundLocation = Window.bgMusic ' **BUG: NullRef
             MusicPlayer.PlayLooping()
+
         End If
         If Window.bgImage <> "" Then
             gForm.BackgroundImage = ScriptI.GetImageRes(Window.bgImage)
@@ -115,7 +116,7 @@
     Sub DrawImage(ByVal Item As InDisplayItem)
         Dim image As Image = GetItemImage(Item)
         Debug.WriteLine("Drawed")
-        g.DrawImage(image, Item.Item.locX, Item.Item.locY, Item.Item.locX + image.Width, Item.Item.locY + image.Width)
+        g.DrawImage(image, Item.Item.locX, Item.Item.locY, image.Width, image.Height)
 
     End Sub
 
@@ -155,7 +156,7 @@
 
     '---------Function About Font&Text---------
     Function GetFont(ByVal Fontcodes As String) As OAEFont ' Get font by fontcode in scripts directly.
-        Dim FontCode() As String = Fontcodes.Split(";")
+        Dim FontCode() As String = Fontcodes.Trim("; ").Split(";")
         Dim tempAttr() As String
         Dim Attrs() As String = {"Verdana", "13", "Regular", "Black", "Disable", "2", "255"} 'Font family;Size;Style;Color;Shadow;ShadowOffset;Transparent
 
@@ -226,8 +227,9 @@
 
     Function GetItemFont(ByVal Item As InDisplayItem) As OAEFont
         For i As Integer = 0 To UBound(fontList)
-            fontList(i).ID = Item.Item.name + "-" + Item.ItemStatus
-            Return fontList(i).Font
+            If fontList(i).ID = Item.Item.name + "-" + Item.ItemStatus Then
+                Return fontList(i).Font
+            End If
         Next
 
         If UBound(fontList) - LBound(fontList) = 0 Then
@@ -268,7 +270,7 @@
         Return Nothing
     End Function
 
-    Function GetItemTextRange(ByVal Item As InDisplayItem) As Rectangle 
+    Function GetItemTextRange(ByVal Item As InDisplayItem) As Rectangle
         Return New Rectangle(Item.Item.locX, Item.Item.locY, Item.Item.TextMaxWidth, Item.Item.TextMaxHeight)
     End Function
 
