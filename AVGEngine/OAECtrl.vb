@@ -259,6 +259,10 @@
         Return Nothing
     End Function
 
+    Function GetItemTextRange(ByVal Item As InDisplayItem) As Rectangle
+        Return New Rectangle(Item.Item.locX, Item.Item.locY, Item.Item.TextMaxWidth, Item.Item.TextMaxHeight)
+    End Function
+
     '---------Window Event Process Function---------
     Sub Destory()
         g.Dispose()
