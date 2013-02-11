@@ -99,7 +99,9 @@
     End Sub
 
     Sub DrawText(ByVal Item As InDisplayItem)
-        'g.DrawString(Item.Item.)
+        Dim mFont As OAEFont = GetItemFont(Item)
+        Dim range As Rectangle = GetItemTextRange(Item)
+        g.DrawString(GetItemText(Item), mFont.Font, mFont.Brush, range)
     End Sub
 
     Sub DrawImage(ByVal Item As InDisplayItem)
