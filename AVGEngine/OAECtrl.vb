@@ -1,14 +1,31 @@
 ﻿Public Class OAECtrl
+
+    Const IGNORE_ERROR As Boolean = False
+
+    '---------Struct---------
     Structure InDisplayItem
         Dim Item As OAEItem
         Dim ItemStatus As String 'Such as 'Normal','Hover','Click',etc.
         Dim LastDrawStatus As String 'Status of the item during the lastest drawing process.
     End Structure
+
     Structure ImageInfo
         Dim Image As Image
         Dim ID As String 'A tag to describe this image.
     End Structure
 
+    Structure OAEFont
+        Dim Font As Font
+        Dim Shadow As OAEShadow
+        Public Color As Color
+    End Structure
+
+    Structure OAEShadow
+        Dim EnableShawdow As Boolean
+        Dim ShadowOffset As Integer
+    End Structure
+
+    '---------Var---------
     Dim ScriptFilePath As String = Application.StartupPath + "script\script.ini"
     Dim ScriptI As OAEScriptEngine
     Dim InitInfo As OAEInitInfo
@@ -18,6 +35,7 @@
     Dim imageList() As ImageInfo 'All Image resources.
     Dim g As Graphics
 
+    '---------Internal Function---------
     Public Sub Init(ByVal ScriptFile As String, ByVal GameForm As Form)
         gForm = GameForm
 
@@ -64,6 +82,24 @@
     End Sub
 
     Sub DrawItem(ByVal Item As InDisplayItem)
+        If Item.Item.type = "Image" Then
+            DrawImage(Item)
+        ElseIf Item.Item.type = "Text" Then
+            DrawText(Item)
+        End If
+
+    End Sub
+
+    Sub DrawText(ByVal Item As InDisplayItem)
+        Dim mFont As OAEFont
+
+        If Item.ItemStatus = "Normal" Then
+            mFont = GetFont(Item.Item.NormalFont)
+        End If
+
+    End Sub
+
+    Sub DrawImage(ByVal Item As InDisplayItem)
         Dim image As Image = GetItemImage(Item)
 
         g.DrawImage(image, Item.Item.locX, Item.Item.locY, Item.Item.locX + image.Width, Item.Item.locY + image.Width)
@@ -80,28 +116,88 @@
             ReDim Preserve imageList(2 * UBound(imageList))
         End If
 
-        Dim rImage As Image
-
         If Item.ItemStatus = "Normal" Then
 
-            imageList(LBound(imageList)).Image = ScriptI.getImageRes(Item.Item.normalImage)
+            imageList(LBound(imageList)).Image = ScriptI.GetImageRes(Item.Item.NormalImage)
             imageList(LBound(imageList)).ID = Item.Item.name + "-" + "Normal"
 
             Return imageList(LBound(imageList)).Image
         ElseIf Item.ItemStatus = "Hover" Then
-            imageList(LBound(imageList)).Image = ScriptI.getImageRes(Item.Item.hoverImage)
+            imageList(LBound(imageList)).Image = ScriptI.GetImageRes(Item.Item.HoverImage)
             imageList(LBound(imageList)).ID = Item.Item.name + "-" + "Hover"
             Return imageList(LBound(imageList)).Image
         ElseIf Item.ItemStatus = "Click" Then
-            imageList(LBound(imageList)).Image = ScriptI.getImageRes(Item.Item.clickImage)
+            imageList(LBound(imageList)).Image = ScriptI.GetImageRes(Item.Item.ClickImage)
             imageList(LBound(imageList)).ID = Item.Item.name + "-" + "Click"
             Return imageList(LBound(imageList)).Image
         End If
 
-        Throw New Exception("Unknow event type : " + Item.ItemStatus)
+        If IGNORE_ERROR = False Then Throw New Exception("Unknow event type : " + Item.ItemStatus)
+
         Return Nothing
     End Function
 
+    '---------Function About Font---------
+    Function GetFont(ByVal Fontcodes As String) As OAEFont
+        Dim FontCode() As String = Fontcodes.Split(";")
+        Dim tempAttr() As String
+        Dim Attrs() As String = {"Verdana", "13", "Regular", "Black", "Disable", "2", "255"} 'Font family;Size;Style;Color;Shadow;ShadowOffset;Transparent
+
+        For i As Integer = 0 To UBound(FontCode)
+            tempAttr = FontCode(i).Split(":")
+
+            If tempAttr(0) = "family" Then
+                Attrs(0) = tempAttr(1)
+            ElseIf tempAttr(0) = "size" Then
+                Attrs(1) = tempAttr(1)
+            ElseIf tempAttr(0) = "style" Then
+                Attrs(2) = tempAttr(1)
+            ElseIf tempAttr(0) = "color" Then
+                Attrs(3) = tempAttr(1)
+            ElseIf tempAttr(0) = "shadow" Then
+                Dim shadow() As String = tempAttr(1).Split(",")
+                Attrs(4) = shadow(0)
+                Attrs(5) = shadow(1)
+            ElseIf tempAttr(0) = "transparent" Then
+                Attrs(6) = tempAttr(1)
+            Else
+                If IGNORE_ERROR = False Then Throw New Exception("Unknow fontcode Attr : " + tempAttr(0))
+            End If
+
+        Next
+
+        GetFont.Font = New Font(Attrs(0), CInt(Attrs(1)), GetFontStyle(Attrs(2)))
+        If Attrs(4) = "Enable" Then
+            GetFont.Shadow.EnableShawdow = True
+        Else
+            GetFont.Shadow.EnableShawdow = False
+        End If
+        GetFont.Shadow.ShadowOffset = CInt(Attrs(5))
+        GetFont.Color = GetColorFromCode(Attrs(3))
+
+    End Function
+
+
+
+    Function GetFontStyle(ByVal Style As String) As FontStyle
+        If Style = "Regular" Then
+            Return FontStyle.Regular
+        ElseIf Style = "Bold" Then
+            Return FontStyle.Bold
+        ElseIf Style = "Italic" Then
+            Return FontStyle.Italic
+        ElseIf Style = "Strikeout" Then
+            Return FontStyle.Strikeout
+        ElseIf Style = "Underline" Then
+            Return FontStyle.Underline
+        End If
+
+        If IGNORE_ERROR = False Then Throw New Exception("Unknow fontstyle : " + Style)
+
+        Return Nothing
+    End Function
+
+    '---------Window Event Process Function---------
     Sub Destory()
         g.Dispose()
         For i As Integer = 0 To UBound(imageList)
