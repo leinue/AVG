@@ -10,10 +10,17 @@
     'Action Info
     Dim ClickAction As String
     Dim HoverAction As String
-    'Event of Image
+    'Attributes of Image
     Dim NormalImage As String
     Dim HoverImage As String
     Dim ClickImage As String
+    'Attributes of Text
+    Dim NormalText As String
+    Dim HoverText As String
+    Dim ClickText As String
+    Dim NormalFont As String
+    Dim HoverFont As String
+    Dim ClickFont As String
 End Structure
 Public Structure OAEWindow
     Dim name As String
