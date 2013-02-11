@@ -1,7 +1,7 @@
 Oline AVG Engine
 ===
 
-This is an engine to run adventure games.
+This is an engine that run adventure games by excuting OAEScript.
 
 It's written in Visual Basic .NET.
 
