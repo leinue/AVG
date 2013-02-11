@@ -32,23 +32,25 @@
 
     '---------Var---------
     Dim ScriptFilePath As String = Application.StartupPath + "script\script.ini"
-    Dim ScriptI As OAEScriptEngine
+    Dim ScriptI As OAEScriptEngine ' Script describer.
     Dim InitInfo As OAEInitInfo
-    Dim MusicPlayer As System.Media.SoundPlayer
-    Dim gForm As Form 'The form to draw.
+    Dim MusicPlayer As System.Media.SoundPlayer ' To play sound.
+    Dim gForm As Form 'The main game form to draw.
     Dim ItemList() As InDisplayItem 'A list of the items which are displaying on the window.
-    Dim imageList() As ImageInfo 'All Image resources.
-    Dim fontList() As FontInfo
-    Dim g As Graphics
+    Dim imageList() As ImageInfo 'Cache Image resources. Clean while changing window.
+    Dim fontList() As FontInfo 'Cache Font.
+
+    Dim g As Graphics ' GDI+
 
     '---------Internal Function---------
     Public Sub Init(ByVal ScriptFile As String, ByVal GameForm As Form)
         gForm = GameForm
 
-        AddHandler gForm.FormClosing, AddressOf Destory
+        RegEvent() 'Register event to function here.
 
         ScriptI = New OAEScriptEngine(ScriptFilePath)
         InitInfo = ScriptI.GetInitInfo()
+
         If InitInfo.width > 0 Then
             gForm.Width = InitInfo.width
         End If
@@ -56,15 +58,16 @@
             gForm.Height = InitInfo.height
         End If
 
-        g = Graphics.FromHwnd(gForm.Handle)
+        g = Graphics.FromHwnd(gForm.Handle) 'Init GDI+
 
-        ShowWindow("Main")
+        ShowWindow("Main") 'All games start with the window Main.
 
     End Sub
 
     Sub ShowWindow(ByVal WindowName As String)
         Dim Window As OAEWindow = ScriptI.GetWindow(WindowName)
-        Dim ItemNameList As String()
+        Dim ItemNameList() As String
+
         If Window.bgMusic <> "" Then
             MusicPlayer.SoundLocation = Window.bgMusic
             MusicPlayer.PlayLooping()
@@ -72,16 +75,16 @@
         If Window.bgImage <> "" Then
             gForm.BackgroundImage = System.Drawing.Image.FromFile(Window.bgImage)
         End If
-        If Window.itemList <> "" Then
+
+        If Window.itemList <> "" Then 'Init Items.
             ItemNameList = Window.itemList.Split(",")
 
             ReDim ItemList(UBound(ItemNameList))
 
             For i As Integer = 0 To UBound(ItemList)
-                ItemList(i).Item = ScriptI.GetItem(ItemNameList(i))
+                ItemList(i).Item = ScriptI.GetItem(ItemNameList(i)) ' Get Item Attributes.
                 ItemList(i).ItemStatus = "Normal"
                 ItemList(i).LastDrawStatus = ""
-                DrawItem(ItemList(i))
             Next
 
         End If
@@ -95,6 +98,8 @@
         ElseIf Item.Item.type = "Text" Then
             DrawText(Item)
         End If
+
+        Item.LastDrawStatus = Item.ItemStatus
 
     End Sub
 
@@ -145,7 +150,7 @@
     End Function
 
     '---------Function About Font&Text---------
-    Function GetFont(ByVal Fontcodes As String) As OAEFont
+    Function GetFont(ByVal Fontcodes As String) As OAEFont ' Get font by fontcode in scripts directly.
         Dim FontCode() As String = Fontcodes.Split(";")
         Dim tempAttr() As String
         Dim Attrs() As String = {"Verdana", "13", "Regular", "Black", "Disable", "2", "255"} 'Font family;Size;Style;Color;Shadow;ShadowOffset;Transparent
@@ -186,11 +191,11 @@
 
     End Function
 
-    Function GetColorFromCode(ByVal code As String, ByVal transparent As Integer) As Color
+    Function GetColorFromCode(ByVal code As String, ByVal transparent As Integer) As Color ' Get color from color code("#xxxxxx" or "red" in the "color:xxx")
         code = code.Trim()
-        If code.StartsWith("#") Then
+        If code.StartsWith("#") Then ' #000000
             Return Color.FromArgb(transparent, Convert.ToInt32(code.Substring(1, 2), 16), Convert.ToInt32(code.Substring(3, 2), 16), Convert.ToInt32(code.Substring(5, 2), 16))
-        Else
+        Else ' Red
             Dim mColor As Color = Color.FromName(code)
             Return Color.FromArgb(transparent, mColor)
             Return mColor
@@ -244,7 +249,7 @@
         Return Nothing
     End Function
 
-    Function GetItemText(ByVal Item As InDisplayItem) As String
+    Function GetItemText(ByVal Item As InDisplayItem) As String ' Getthe text of a item in current item status.
         Dim wChar() As Char = {" ", Chr(34)}
         If Item.ItemStatus = "Normal" Then
             Return Item.Item.NormalText.Trim(wChar)
@@ -259,16 +264,40 @@
         Return Nothing
     End Function
 
-    Function GetItemTextRange(ByVal Item As InDisplayItem) As Rectangle
+    Function GetItemTextRange(ByVal Item As InDisplayItem) As Rectangle 
         Return New Rectangle(Item.Item.locX, Item.Item.locY, Item.Item.TextMaxWidth, Item.Item.TextMaxHeight)
     End Function
 
     '---------Window Event Process Function---------
-    Sub Destory()
+    Sub RegEvent() 'Register event process function.
+        AddHandler gForm.FormClosing, AddressOf gForm_Destory
+        AddHandler gForm.Paint, AddressOf gForm_Repaint
+        AddHandler gForm.MouseMove, AddressOf gForm_MouseMove
+        AddHandler gForm.MouseDown, AddressOf gForm_MouseDown
+    End Sub
+
+    Sub gForm_Destory() 'Release all resources.
+        MusicPlayer.Dispose()
         g.Dispose()
         For i As Integer = 0 To UBound(imageList)
             imageList(i).Image.Dispose()
         Next
+        For i As Integer = 0 To UBound(fontList)
+            fontList(i).Font.Font.Dispose()
+            fontList(i).Font.Brush.Dispose()
+        Next
+
+    End Sub
+
+    Sub gForm_Repaint()
+
+    End Sub
+
+    Sub gForm_MouseMove()
+
+    End Sub
+
+    Sub gForm_MouseDown()
 
     End Sub
 
