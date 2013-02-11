@@ -33,6 +33,8 @@
 
     Dim TextMaxWidth As String
     Dim TextMaxHeight As String
+
+    Dim visible As Boolean
 End Structure
 Public Structure OAEWindow
     Dim name As String

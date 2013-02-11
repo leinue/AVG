@@ -70,8 +70,8 @@
         Dim ItemNameList() As String
 
         If Window.bgMusic <> "" Then
-            MusicPlayer.SoundLocation = Window.bgMusic
-            MusicPlayer.PlayLooping()
+            'MusicPlayer.SoundLocation = Window.bgMusic
+            'MusicPlayer.PlayLooping()
         End If
         If Window.bgImage <> "" Then
             gForm.BackgroundImage = ScriptI.GetImageRes(Window.bgImage)
@@ -266,7 +266,7 @@
         Return Nothing
     End Function
 
-    Function GetItemTextRange(ByVal Item As InDisplayItem) As Rectangle 
+    Function GetItemTextRange(ByVal Item As InDisplayItem) As Rectangle
         Return New Rectangle(Item.Item.locX, Item.Item.locY, Item.Item.TextMaxWidth, Item.Item.TextMaxHeight)
     End Function
 

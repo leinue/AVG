@@ -51,10 +51,10 @@ Public Class OAEScriptEngine
     End Function
     Public Function GetItem(ByVal ItemSectionName As String) As OAEItem '获得类型为item的各项属性
         GetItem.type = GetINI("item-" + ItemSectionName, "type", "", MainPath)
-        GetItem.height = GetINI("item-" + ItemSectionName, "height", "0", MainPath)
-        GetItem.locX = GetINI("item-" + ItemSectionName, "locX", "0", MainPath)
-        GetItem.locY = GetINI("item-" + ItemSectionName, "locY", "0", MainPath)
-        GetItem.width = GetINI("item-" + ItemSectionName, "width", "0", MainPath)
+        GetItem.height = ItNull(GetINI("item-" + ItemSectionName, "height", "0", MainPath))
+        GetItem.locX = ItNull(GetINI("item-" + ItemSectionName, "locX", "0", MainPath))
+        GetItem.locY = ItNull(GetINI("item-" + ItemSectionName, "locY", "0", MainPath))
+        GetItem.width = ItNull(GetINI("item-" + ItemSectionName, "width", "0", MainPath))
         GetItem.name = GetINI("item-" + ItemSectionName, "name", "", MainPath)
         GetItem.NormalImage = GetINI("item-" + ItemSectionName, "NormalImage", "", MainPath)
         GetItem.HoverImage = GetINI("item-" + ItemSectionName, "HoverImage", "", MainPath)
@@ -71,8 +71,10 @@ Public Class OAEScriptEngine
         GetItem.NormalFont = GetINI("item-" + ItemSectionName, "NormalFont", "", MainPath)
     End Function
     Public Function GetInitInfo() As OAEInitInfo
-        GetInitInfo.height = GetINI("init", "height", "", MainPath)
-        GetInitInfo.width = GetINI("init", "width", "", MainPath)
+        GetInitInfo.height = ItNull(GetINI("init", "height", "", MainPath))
+        GetInitInfo.width = ItNull(GetINI("init", "width", "", MainPath))
+        GetInitInfo.author = GetINI("init", "author", "", MainPath)
+        GetInitInfo.gameName = GetINI("init", "gameName", "", MainPath)
     End Function
     Function GetImageRes(ByVal res As String) As Image
         'image(bgImage)->image-bgImage
@@ -96,6 +98,12 @@ Public Class OAEScriptEngine
             Return GetINI(res, "path", "", MainPath)
         Else
             Throw New Exception("Image resources type unmatch:" + IfSound(1))
+        End If
+    End Function
+    Function ItNull(ByVal Res As String) As Integer
+        If Res = "" Then
+            Return 0
+        Else : Return Res
         End If
     End Function
 End Class
