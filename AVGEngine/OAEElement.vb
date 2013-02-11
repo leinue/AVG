@@ -43,6 +43,9 @@ End Structure
 Public Structure OAEInitInfo
     Dim width As Integer
     Dim height As Integer
+
+    Dim gameName As String
+    Dim author As String
 End Structure
 Public Structure OAEWindowAttr
     Dim included As String
