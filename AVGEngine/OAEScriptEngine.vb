@@ -15,7 +15,7 @@ Public Class OAEScriptEngine
         WriteINI = WritePrivateProfileString(Section, AppName, lpDefault, FileName)
     End Function
     Public Sub Preproccess() '预处理器
-        Dim iniText_Main As String, iniText_Script As String = "", TextTrimed As String = ""
+        Dim iniText_Main As String = "", iniText_Script As String = "", TextTrimed As String = ""
         Dim re As StreamReader, Deal() As String '←对获得的main.ini进行分割处理的数组
         Dim IncludedName() As String '获得名字
         Dim CountWAttr, i As Integer '储存windowAttr的个数,用来获得included的文件个数
@@ -61,6 +61,14 @@ Public Class OAEScriptEngine
         GetItem.ClickImage = GetINI("item-" + ItemSectionName, "ClickImage", "", MainPath)
         GetItem.HoverAction = GetINI("item-" + ItemSectionName, "HoverAction", "", MainPath)
         GetItem.ClickAction = GetINI("item-" + ItemSectionName, "ClickAction", "", MainPath)
+        GetItem.ClickFont = GetINI("item-" + ItemSectionName, "ClickFont", "", MainPath)
+        GetItem.ClickText = GetINI("item-" + ItemSectionName, "ClickText", "", MainPath)
+        GetItem.HoverFont = GetINI("item-" + ItemSectionName, "HoverFont", "", MainPath)
+        GetItem.HoverText = GetINI("item-" + ItemSectionName, "HoverText", "", MainPath)
+        GetItem.TextMaxHeight = GetINI("item-" + ItemSectionName, "TextMaxHeight", "", MainPath)
+        GetItem.TextMaxWidth = GetINI("item-" + ItemSectionName, "TextMaxWidth", "", MainPath)
+        GetItem.NormalText = GetINI("item-" + ItemSectionName, "NormalText", "", MainPath)
+        GetItem.NormalFont = GetINI("item-" + ItemSectionName, "NormalFont", "", MainPath)
     End Function
     Public Function GetInitInfo() As OAEInitInfo
         GetInitInfo.height = GetINI("init", "height", "", MainPath)
