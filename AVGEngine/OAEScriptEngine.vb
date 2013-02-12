@@ -44,11 +44,11 @@ Public Class OAEScriptEngine
     Sub New(ByVal path As String) '构造函数
         MainPath = path '脚本目录
     End Sub
-    Public Function GetWindow(ByVal WindowSectionName As String) As OAEWindow '获得类型为window的各项属性
-        GetWindow.bgImage = GetINI("window-" + WindowSectionName, "bgImage", "", MainPath)
-        GetWindow.bgMusic = GetINI("window-" + WindowSectionName, "bgMusic", "", MainPath)
-        GetWindow.itemList = GetINI("window-" + WindowSectionName, "itemList", "", MainPath)
-        GetWindow.name = GetINI("window-" + WindowSectionName, "name", "", MainPath)
+    Public Function GetScene(ByVal WindowSectionName As String) As OAEScene '获得类型为window的各项属性
+        GetScene.bgImage = GetINI("scene-" + WindowSectionName, "bgImage", "", MainPath)
+        GetScene.bgMusic = GetINI("scene-" + WindowSectionName, "bgMusic", "", MainPath)
+        GetScene.itemList = GetINI("scene-" + WindowSectionName, "itemList", "", MainPath)
+        GetScene.name = GetINI("scene-" + WindowSectionName, "name", "", MainPath)
     End Function
     Public Function GetItem(ByVal ItemSectionName As String) As OAEItem '获得类型为item的各项属性
         GetItem.type = GetINI("item-" + ItemSectionName, "type", "", MainPath)
@@ -56,7 +56,7 @@ Public Class OAEScriptEngine
         GetItem.locX = ItNull(GetINI("item-" + ItemSectionName, "locX", "0", MainPath))
         GetItem.locY = ItNull(GetINI("item-" + ItemSectionName, "locY", "0", MainPath))
         GetItem.width = ItNull(GetINI("item-" + ItemSectionName, "width", "0", MainPath))
-        GetItem.name = GetINI("item-" + ItemSectionName, "name", "", MainPath)
+        GetItem.name = ItemSectionName
         GetItem.NormalImage = GetINI("item-" + ItemSectionName, "NormalImage", "", MainPath)
         GetItem.HoverImage = GetINI("item-" + ItemSectionName, "HoverImage", "", MainPath)
         GetItem.ClickImage = GetINI("item-" + ItemSectionName, "ClickImage", "", MainPath)
@@ -66,8 +66,8 @@ Public Class OAEScriptEngine
         GetItem.ClickText = GetINI("item-" + ItemSectionName, "ClickText", "", MainPath)
         GetItem.HoverFont = GetINI("item-" + ItemSectionName, "HoverFont", "", MainPath)
         GetItem.HoverText = GetINI("item-" + ItemSectionName, "HoverText", "", MainPath)
-        GetItem.TextMaxHeight = GetINI("item-" + ItemSectionName, "TextMaxHeight", "", MainPath)
-        GetItem.TextMaxWidth = GetINI("item-" + ItemSectionName, "TextMaxWidth", "", MainPath)
+        GetItem.TextMaxHeight = ItNull(GetINI("item-" + ItemSectionName, "TextMaxHeight", "", MainPath))
+        GetItem.TextMaxWidth = ItNull(GetINI("item-" + ItemSectionName, "TextMaxWidth", "", MainPath))
         GetItem.NormalText = GetINI("item-" + ItemSectionName, "NormalText", "", MainPath)
         GetItem.NormalFont = GetINI("item-" + ItemSectionName, "NormalFont", "", MainPath)
     End Function

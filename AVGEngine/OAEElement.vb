@@ -36,7 +36,7 @@
 
     Dim visible As Boolean
 End Structure
-Public Structure OAEWindow
+Public Structure OAEScene
     Dim name As String
     Dim bgImage As String
     Dim bgMusic As String
