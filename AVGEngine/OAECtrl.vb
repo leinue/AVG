@@ -37,10 +37,12 @@
     Dim MusicPlayer As System.Media.SoundPlayer = New System.Media.SoundPlayer ' To play sound.
     Dim gForm As Form 'The main game form to draw.
     Dim ItemList() As InDisplayItem 'A list of the items which are displaying on the window.
-    Dim imageList(2) As ImageInfo 'Cache Image resources. Clean while changing window.
+    Dim imageList() As ImageInfo 'Cache Image resources. Clean while changing window.
     Dim fontList(2) As FontInfo 'Cache Font.
 
-    Dim g As Graphics ' GDI+
+    Dim CacheBmp As Bitmap
+    Dim g As Graphics ' Cache Graphics
+    Dim gFormGra As Graphics ' Real Graphics
 
     '---------Internal Function---------
     Public Sub Init(ByVal GameForm As Form)
@@ -58,7 +60,9 @@
             gForm.Height = InitInfo.height
         End If
 
-        g = Graphics.FromHwnd(gForm.Handle) 'Init GDI+
+        CacheBmp = New Bitmap(gForm.Width, gForm.Height)
+        g = Graphics.FromImage(CacheBmp)
+        gFormGra = Graphics.FromHwnd(gForm.Handle) ' Init GDI+
 
         ShowScene("Main") 'All games start with the window Main.
         gForm.Show()
@@ -74,10 +78,6 @@
             MusicPlayer.PlayLooping()
 
         End If
-        If Scene.bgImage <> "" Then
-            gForm.BackgroundImage = ScriptI.GetImageRes(Scene.bgImage)
-            Debug.WriteLine("BgImage Loaded.")
-        End If
 
         If Scene.itemList <> "" Then 'Init Items.
             ItemNameList = Scene.itemList.Split(",")
@@ -88,7 +88,6 @@
                 ItemList(i).Item = ScriptI.GetItem(ItemNameList(i)) ' Get Item Attributes.
                 ItemList(i).ItemStatus = "Normal"
                 ItemList(i).LastDrawStatus = ""
-                DrawItem(ItemList(i))
             Next
 
         End If
@@ -128,31 +127,37 @@
 
     '---------Function About Image---------
 
-    Function GetItemImage(ByRef Item As InDisplayItem) As Image
-        For i As Integer = 0 To UBound(imageList)
-            If imageList(i).ID = Item.Item.name + "-" + Item.ItemStatus Then
-                Return imageList(i).Image
-            End If
-        Next
+    Function GetItemImage(ByVal Item As InDisplayItem) As Image
+        If (Item.ItemStatus = "Hover" And Item.Item.HoverImage = "") Or (Item.ItemStatus = "Click" And Item.Item.ClickImage = "") Then
+            Item.ItemStatus = "Normal"
+        End If
+        If imageList IsNot Nothing Then
+            For i As Integer = 0 To UBound(imageList)
+                If imageList(i).ID = Item.Item.name + "-" + Item.ItemStatus Then
+                    Return imageList(i).Image
+                End If
+            Next
 
-        If UBound(imageList) - LBound(imageList) = 0 Then
-            ReDim Preserve imageList(2 * UBound(imageList))
+            ReDim Preserve imageList(imageList.Length)
+        Else
+            ReDim Preserve imageList(0)
         End If
 
+        Dim j As Integer = UBound(imageList)
+
         If Item.ItemStatus = "Normal" Then
+            imageList(j).Image = ScriptI.GetImageRes(Item.Item.NormalImage)
+            imageList(j).ID = Item.Item.name + "-" + "Normal"
 
-            imageList(LBound(imageList)).Image = ScriptI.GetImageRes(Item.Item.NormalImage)
-            imageList(LBound(imageList)).ID = Item.Item.name + "-" + "Normal"
-
-            Return imageList(LBound(imageList)).Image
+            Return imageList(j).Image
         ElseIf Item.ItemStatus = "Hover" Then
-            imageList(LBound(imageList)).Image = ScriptI.GetImageRes(Item.Item.HoverImage)
-            imageList(LBound(imageList)).ID = Item.Item.name + "-" + "Hover"
-            Return imageList(LBound(imageList)).Image
+            imageList(j).Image = ScriptI.GetImageRes(Item.Item.HoverImage)
+            imageList(j).ID = Item.Item.name + "-" + "Hover"
+            Return imageList(j).Image
         ElseIf Item.ItemStatus = "Click" Then
-            imageList(LBound(imageList)).Image = ScriptI.GetImageRes(Item.Item.ClickImage)
-            imageList(LBound(imageList)).ID = Item.Item.name + "-" + "Click"
-            Return imageList(LBound(imageList)).Image
+            imageList(j).Image = ScriptI.GetImageRes(Item.Item.ClickImage)
+            imageList(j).ID = Item.Item.name + "-" + "Click"
+            Return imageList(j).Image
         End If
 
         If IGNORE_ERROR = False Then Throw New Exception("Unknow event type : " + Item.ItemStatus)
@@ -209,7 +214,6 @@
         Else ' Red
             Dim mColor As Color = Color.FromName(code)
             Return Color.FromArgb(transparent, mColor)
-            Return mColor
         End If
     End Function
 
@@ -232,28 +236,32 @@
     End Function
 
     Function GetItemFont(ByRef Item As InDisplayItem) As OAEFont
-        For i As Integer = 0 To UBound(fontList)
-            If fontList(i).ID = Item.Item.name + "-" + Item.ItemStatus Then
-                Return fontList(i).Font
-            End If
-        Next
-
-        If UBound(fontList) - LBound(fontList) = 0 Then
-            ReDim Preserve fontList(2 * UBound(fontList))
+        If fontList IsNot Nothing Then
+            For i As Integer = 0 To UBound(fontList)
+                If fontList(i).ID = Item.Item.name + "-" + Item.ItemStatus Then
+                    Return fontList(i).Font
+                End If
+            Next
+            ReDim Preserve fontList(fontList.Length)
+        Else
+            ReDim Preserve fontList(0)
         End If
 
+
+        Dim j As Integer = UBound(fontList)
+
         If Item.ItemStatus = "Normal" Then
-            fontList(LBound(fontList)).Font = GetFont(Item.Item.NormalFont)
-            fontList(LBound(fontList)).ID = Item.Item.name + "-" + "Normal"
-            Return fontList(LBound(fontList)).Font
+            fontList(j).Font = GetFont(Item.Item.NormalFont)
+            fontList(j).ID = Item.Item.name + "-" + "Normal"
+            Return fontList(j).Font
         ElseIf Item.ItemStatus = "Hover" Then
-            fontList(LBound(fontList)).Font = GetFont(Item.Item.NormalFont)
-            fontList(LBound(fontList)).ID = Item.Item.name + "-" + "Hover"
-            Return fontList(LBound(fontList)).Font
+            fontList(j).Font = GetFont(Item.Item.NormalFont)
+            fontList(j).ID = Item.Item.name + "-" + "Hover"
+            Return fontList(j).Font
         ElseIf Item.ItemStatus = "Click" Then
-            fontList(LBound(fontList)).Font = GetFont(Item.Item.NormalFont)
-            fontList(LBound(fontList)).ID = Item.Item.name + "-" + "Click"
-            Return fontList(LBound(fontList)).Font
+            fontList(j).Font = GetFont(Item.Item.NormalFont)
+            fontList(j).ID = Item.Item.name + "-" + "Click"
+            Return fontList(j).Font
         End If
 
         If IGNORE_ERROR = False Then Throw New Exception("Unknow event type : " + Item.ItemStatus)
@@ -291,6 +299,8 @@
     Sub gForm_Destory() 'Release all resources.
         MusicPlayer.Dispose()
         g.Dispose()
+        gFormGra.Dispose()
+        CacheBmp.Dispose()
         For i As Integer = 0 To UBound(imageList)
             If imageList(i).Image IsNot Nothing Then
                 imageList(i).Image.Dispose()
@@ -306,10 +316,12 @@
     End Sub
 
     Sub gForm_Repaint()
-        g.Clear(Color.Transparent)
+
         For i As Integer = 0 To UBound(ItemList)
             DrawItem(ItemList(i))
         Next
+
+        gFormGra.DrawImage(CacheBmp, 0, 0)
 
     End Sub
 
