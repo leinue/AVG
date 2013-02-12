@@ -53,12 +53,12 @@
         ScriptI = New OAEScriptEngine(ScriptFilePath)
         InitInfo = ScriptI.GetInitInfo()
 
-        If InitInfo.width > 0 Then
-            gForm.Width = InitInfo.width
+        If InitInfo.width > 0 And InitInfo.height > 0 Then
+            gForm.ClientSize = New Size(InitInfo.width, InitInfo.height)
+        Else
+            gForm.ClientSize = New Size(800, 600)
         End If
-        If InitInfo.height > 0 Then
-            gForm.Height = InitInfo.height
-        End If
+        
 
         CacheBmp = New Bitmap(gForm.Width, gForm.Height)
         g = Graphics.FromImage(CacheBmp)
@@ -342,8 +342,20 @@
 
     End Sub
 
-    Sub gForm_MouseDown()
-
+    Sub gForm_MouseDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.MouseEventArgs)
+        For i As Integer = 0 To UBound(ItemList)
+            If e.X > ItemList(i).Item.locX And e.X < ItemList(i).Item.locX + ItemList(i).Item.width And e.Y > ItemList(i).Item.locY And e.Y < ItemList(i).Item.locX + ItemList(i).Item.height Then
+                If ItemList(i).LastDrawStatus <> "Click" Then
+                    ItemList(i).ItemStatus = "Click"
+                    gForm_Repaint()
+                End If
+            Else
+                If ItemList(i).LastDrawStatus <> "Normal" Then
+                    ItemList(i).ItemStatus = "Normal"
+                    gForm_Repaint()
+                End If
+            End If
+        Next
     End Sub
 
 End Class
