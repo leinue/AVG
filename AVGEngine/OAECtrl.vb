@@ -38,7 +38,7 @@
     Dim gForm As Form 'The main game form to draw.
     Dim ItemList() As InDisplayItem 'A list of the items which are displaying on the window.
     Dim imageList() As ImageInfo 'Cache Image resources. Clean while changing window.
-    Dim fontList(2) As FontInfo 'Cache Font.
+    Dim fontList() As FontInfo 'Cache Font.
 
     Dim CacheBmp As Bitmap
     Dim g As Graphics ' Cache Graphics
@@ -52,6 +52,8 @@
 
         ScriptI = New OAEScriptEngine(ScriptFilePath)
         InitInfo = ScriptI.GetInitInfo()
+
+        ReDim imageList(0), fontList(0)
 
         If InitInfo.width > 0 And InitInfo.height > 0 Then
             gForm.ClientSize = New Size(InitInfo.width, InitInfo.height)
@@ -114,7 +116,7 @@
 
     Sub DrawImage(ByRef Item As InDisplayItem)
         Dim image As Image = GetItemImage(Item)
-        Debug.WriteLine("Drawed")
+        'Debug.WriteLine("Drawed")
         g.DrawImage(image, Item.Item.locX, Item.Item.locY, image.Width, image.Height)
 
         If Item.Item.width = 0 Then
@@ -290,13 +292,13 @@
 
     '---------Window Event Process Function---------
     Sub RegEvent() 'Register event process function.
-        AddHandler gForm.FormClosing, AddressOf gForm_Destory
+        AddHandler gForm.FormClosing, AddressOf Destory
         AddHandler gForm.Paint, AddressOf gForm_Repaint
         AddHandler gForm.MouseMove, AddressOf gForm_MouseMove
         AddHandler gForm.MouseDown, AddressOf gForm_MouseDown
     End Sub
 
-    Sub gForm_Destory() 'Release all resources.
+    Sub Destory() 'Release all resources.
         MusicPlayer.Dispose()
         g.Dispose()
         gFormGra.Dispose()
@@ -343,6 +345,7 @@
     End Sub
 
     Sub gForm_MouseDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.MouseEventArgs)
+        Debug.WriteLine("Position: " + CStr(e.X) + ", " + CStr(e.Y))
         For i As Integer = 0 To UBound(ItemList)
             If e.X > ItemList(i).Item.locX And e.X < ItemList(i).Item.locX + ItemList(i).Item.width And e.Y > ItemList(i).Item.locY And e.Y < ItemList(i).Item.locX + ItemList(i).Item.height Then
                 If ItemList(i).LastDrawStatus <> "Click" Then
