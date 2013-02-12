@@ -34,7 +34,7 @@
     Dim ScriptFilePath As String = Application.StartupPath + "//script//script.ini"
     Dim ScriptI As OAEScriptEngine ' Script describer.
     Dim InitInfo As OAEInitInfo
-    Dim MusicPlayer As System.Media.SoundPlayer ' To play sound.
+    Dim MusicPlayer As System.Media.SoundPlayer = New System.Media.SoundPlayer ' To play sound.
     Dim gForm As Form 'The main game form to draw.
     Dim ItemList() As InDisplayItem 'A list of the items which are displaying on the window.
     Dim imageList(2) As ImageInfo 'Cache Image resources. Clean while changing window.
@@ -60,27 +60,27 @@
 
         g = Graphics.FromHwnd(gForm.Handle) 'Init GDI+
 
-        ShowWindow("Main") 'All games start with the window Main.
+        ShowScene("Main") 'All games start with the window Main.
         gForm.Show()
 
     End Sub
 
-    Sub ShowWindow(ByVal WindowName As String)
-        Dim Window As OAEWindow = ScriptI.GetWindow(WindowName)
+    Sub ShowScene(ByVal SceneName As String)
+        Dim Scene As OAEScene = ScriptI.GetScene(SceneName)
         Dim ItemNameList() As String
 
-        If Window.bgMusic <> "" Then
-            MusicPlayer.SoundLocation = Window.bgMusic ' **BUG: NullRef
+        If Scene.bgMusic <> "" Then
+            MusicPlayer.SoundLocation = Scene.bgMusic ' **BUG: NullRef
             MusicPlayer.PlayLooping()
 
         End If
-        If Window.bgImage <> "" Then
-            gForm.BackgroundImage = ScriptI.GetImageRes(Window.bgImage)
+        If Scene.bgImage <> "" Then
+            gForm.BackgroundImage = ScriptI.GetImageRes(Scene.bgImage)
             Debug.WriteLine("BgImage Loaded.")
         End If
 
-        If Window.itemList <> "" Then 'Init Items.
-            ItemNameList = Window.itemList.Split(",")
+        If Scene.itemList <> "" Then 'Init Items.
+            ItemNameList = Scene.itemList.Split(",")
 
             ReDim ItemList(UBound(ItemNameList))
 
@@ -96,7 +96,7 @@
 
     '---------Function About Drawing---------
 
-    Sub DrawItem(ByVal Item As InDisplayItem)
+    Sub DrawItem(ByRef Item As InDisplayItem)
         If Item.Item.type = "image" Then
             DrawImage(Item)
         ElseIf Item.Item.type = "text" Then
@@ -107,22 +107,28 @@
 
     End Sub
 
-    Sub DrawText(ByVal Item As InDisplayItem)
+    Sub DrawText(ByRef Item As InDisplayItem)
         Dim mFont As OAEFont = GetItemFont(Item)
         Dim range As Rectangle = GetItemTextRange(Item)
         g.DrawString(GetItemText(Item), mFont.Font, mFont.Brush, range)
     End Sub
 
-    Sub DrawImage(ByVal Item As InDisplayItem)
+    Sub DrawImage(ByRef Item As InDisplayItem)
         Dim image As Image = GetItemImage(Item)
         Debug.WriteLine("Drawed")
         g.DrawImage(image, Item.Item.locX, Item.Item.locY, image.Width, image.Height)
 
+        If Item.Item.width = 0 Then
+            Item.Item.width = image.Width
+        End If
+        If Item.Item.height = 0 Then
+            Item.Item.height = image.Height
+        End If
     End Sub
 
     '---------Function About Image---------
 
-    Function GetItemImage(ByVal Item As InDisplayItem) As Image
+    Function GetItemImage(ByRef Item As InDisplayItem) As Image
         For i As Integer = 0 To UBound(imageList)
             If imageList(i).ID = Item.Item.name + "-" + Item.ItemStatus Then
                 Return imageList(i).Image
@@ -225,7 +231,7 @@
         Return Nothing
     End Function
 
-    Function GetItemFont(ByVal Item As InDisplayItem) As OAEFont
+    Function GetItemFont(ByRef Item As InDisplayItem) As OAEFont
         For i As Integer = 0 To UBound(fontList)
             If fontList(i).ID = Item.Item.name + "-" + Item.ItemStatus Then
                 Return fontList(i).Font
@@ -255,7 +261,7 @@
         Return Nothing
     End Function
 
-    Function GetItemText(ByVal Item As InDisplayItem) As String ' Getthe text of a item in current item status.
+    Function GetItemText(ByRef Item As InDisplayItem) As String ' Getthe text of a item in current item status.
         Dim wChar() As Char = {" ", Chr(34)}
         If Item.ItemStatus = "Normal" Then
             Return Item.Item.NormalText.Trim(wChar)
@@ -286,20 +292,41 @@
         MusicPlayer.Dispose()
         g.Dispose()
         For i As Integer = 0 To UBound(imageList)
-            imageList(i).Image.Dispose()
+            If imageList(i).Image IsNot Nothing Then
+                imageList(i).Image.Dispose()
+            End If
         Next
         For i As Integer = 0 To UBound(fontList)
-            fontList(i).Font.Font.Dispose()
-            fontList(i).Font.Brush.Dispose()
+            If fontList(i).Font.Font IsNot Nothing And fontList(i).Font.Brush IsNot Nothing Then
+                fontList(i).Font.Font.Dispose()
+                fontList(i).Font.Brush.Dispose()
+            End If
         Next
 
     End Sub
 
     Sub gForm_Repaint()
+        g.Clear(Color.Transparent)
+        For i As Integer = 0 To UBound(ItemList)
+            DrawItem(ItemList(i))
+        Next
 
     End Sub
 
-    Sub gForm_MouseMove()
+    Sub gForm_MouseMove(ByVal sender As System.Object, ByVal e As System.Windows.Forms.MouseEventArgs)
+        For i As Integer = 0 To UBound(ItemList)
+            If e.X > ItemList(i).Item.locX And e.X < ItemList(i).Item.locX + ItemList(i).Item.width And e.Y > ItemList(i).Item.locY And e.Y < ItemList(i).Item.locX + ItemList(i).Item.height Then
+                If ItemList(i).LastDrawStatus <> "Hover" Then
+                    ItemList(i).ItemStatus = "Hover"
+                    gForm_Repaint()
+                End If
+            Else
+                If ItemList(i).LastDrawStatus <> "Normal" Then
+                    ItemList(i).ItemStatus = "Normal"
+                    gForm_Repaint()
+                End If
+            End If
+        Next
 
     End Sub
 
