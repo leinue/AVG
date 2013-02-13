@@ -6,6 +6,8 @@
 Imports System.IO
 
 Public Class OAECSReader
+
+    '---------Structures---------
     Structure OAEAction
         Dim Name As String
         Dim Code As String
@@ -16,10 +18,19 @@ Public Class OAECSReader
         Dim Var As String
     End Structure
 
-    Sub New(ByVal Path As String)
+    '---------Vars---------
+    Dim ResReader As OAEUSReader
+
+    '---------Construct Functions---------
+    Sub New(ByVal mResReader As OAEUSReader)
+        ResReader = mResReader
+    End Sub
+
+    Sub New(ByVal Path As String, ByVal ResReader As OAEUSReader)
         LoadFromFile(Path)
     End Sub
 
+    '---------Function To Load---------
     Sub LoadFromFile(ByVal Path As String)
         Dim Stream As StreamReader = New StreamReader(Path)
 
@@ -73,7 +84,7 @@ Public Class OAECSReader
                 Buffer = Buffer + oChar
 
             ElseIf Status = ">" And (oChar = Chr(13) Or oChar = Chr(10)) Then
-                DoOperation(OperateType, Buffer, "")
+                DoOperation(OperateType, Buffer)
                 Buffer = ""
                 Status = ""
 
@@ -89,6 +100,18 @@ Public Class OAECSReader
         End While
     End Sub
 
+    '---------Details Processing Function---------
+    Sub DoOperation(ByVal Type As String, ByVal Op1 As String, Optional ByVal Op2 As String = "")
+        If Type = "Include" Then
+            LoadFromFile(Op1)
+        End If
+        If Type = "LoadRes" Then
+            ResReader.LoadFromFile(Op1)
+        End If
+    End Sub
+
+
+    '---------Other Functions---------
     Function CheckScriptVer(ByRef Stream As StreamReader) As Boolean
         Dim Version As String = Stream.ReadLine().Trim()
 
@@ -99,12 +122,4 @@ Public Class OAECSReader
         End If
     End Function
 
-    Sub DoOperation(ByVal Type As String, ByVal Op1 As String, ByVal Op2 As String)
-        'If Type = "Include" Then
-        'LoadFromFile(Op1)
-        'End If
-
-        Debug.WriteLine(Type + " - " + Op1 + " - " + Op2)
-
-    End Sub
 End Class
