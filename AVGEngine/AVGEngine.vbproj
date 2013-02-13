@@ -72,7 +72,7 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="OAECSReader.vb" />
+    <Compile Include="OAECSDescriber.vb" />
     <Compile Include="OAECtrl.vb" />
     <Compile Include="Form1.vb">
       <SubType>Form</SubType>
@@ -97,8 +97,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="OAEElement.vb" />
-    <Compile Include="OAESDescriber.vb" />
-    <Compile Include="OAEUSReader.vb" />
+    <Compile Include="OAEUSDescriber.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Form1.resx">
