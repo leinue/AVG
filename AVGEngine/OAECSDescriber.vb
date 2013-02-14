@@ -15,7 +15,7 @@ Public Class OAECSDescriber
 
     Structure OAEVar
         Dim Name As String
-        Dim Var As String
+        Dim Value As String
     End Structure
 
     '---------Vars---------
@@ -136,6 +136,11 @@ Public Class OAECSDescriber
             AddAction(Op1, Op2)
         End If
 
+        If Type = "Var" Then
+            Dim Var() As String = Op1.Split(":")
+            SetVar(Var(0), Var(1))
+        End If
+
     End Sub
 
     Sub AddAction(ByVal Name As String, ByVal Code As String)
@@ -149,6 +154,15 @@ Public Class OAECSDescriber
 
         ActionNum = ActionNum + 1
 
+    End Sub
+
+    Sub SetVar(ByVal Name As String, ByVal Value As String)
+        If CVars.Length = CVarNum Then
+            ReDim Preserve CVars(CVarNum * 2 - 1)
+        End If
+
+        CVars(CVarNum).Name = Name
+        CVars(CVarNum).Value = Value
     End Sub
 
 
