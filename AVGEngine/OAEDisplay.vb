@@ -18,7 +18,7 @@ Public Class OAEDisplay
         AddHandler GameForm.MouseDown, AddressOf eMouseDown
     End Sub
 
-    Sub Init(ByVal Width As Integer, ByVal Height As Integer)
+    Public Sub Init(ByVal Width As Integer, ByVal Height As Integer)
         GameForm.Height = Height
         GameForm.Width = Width
 
@@ -29,7 +29,7 @@ Public Class OAEDisplay
         FormGrap = Graphics.FromHwnd(GameForm.Handle)
     End Sub
 
-    Sub bDrawItem(ByRef Item As OAEItem)
+    Private Sub bDrawItem(ByRef Item As OAEItem)
         If Item.Type = "Text" Then
             Dim Text As OAEItemText
             If Item.Status = "Normal" Then
@@ -78,7 +78,7 @@ Public Class OAEDisplay
         End If
     End Sub
 
-    Sub DrawText(ByRef Grap As Graphics, ByRef Text As OAEItemText, ByVal range As Rectangle)
+    Private Sub DrawText(ByRef Grap As Graphics, ByRef Text As OAEItemText, ByVal range As Rectangle)
         Grap.DrawString(Text.Text, Text.Font.Font, Text.Font.Brush, range)
 
         If Text.Effect.Shadow.Enable = True Then
@@ -86,7 +86,7 @@ Public Class OAEDisplay
         End If
     End Sub
 
-    Sub DrawImage(ByRef Grap As Graphics, ByRef Image As OAEItemImage, ByVal range As Rectangle)
+    Private Sub DrawImage(ByRef Grap As Graphics, ByRef Image As OAEItemImage, ByVal range As Rectangle)
         If Image.Effect.Transparent.Enable = True Then
             Dim ImageAtt As ImageAttributes = ImageApplyTransp(Image.Effect.Transparent.Transparent)
             Grap.DrawImage(Image.Image, range, 0, 0, Image.Image.Width, Image.Image.Height, GraphicsUnit.Pixel, ImageAtt)
@@ -95,7 +95,7 @@ Public Class OAEDisplay
         End If
     End Sub
 
-    Function ImageApplyTransp(ByVal Transparent As Integer) As ImageAttributes
+    Private Function ImageApplyTransp(ByVal Transparent As Integer) As ImageAttributes
         If Transparent > 225 Then
             If IgnoreError = False Then Throw New Exception("(ImageApplyTransp)Illegal Transparent:" + Transparent)
         End If
@@ -150,7 +150,7 @@ Public Class OAEDisplay
         Next
     End Sub
 
-    Function InRectangle(ByVal Point As Point, ByVal Rectangle As Rectangle) As Boolean
+    Private Function InRectangle(ByVal Point As Point, ByVal Rectangle As Rectangle) As Boolean
         If Rectangle.X < Point.X And _
             Point.X < (Rectangle.X + Rectangle.Width) And _
             Rectangle.Y < Point.Y And _
@@ -161,7 +161,7 @@ Public Class OAEDisplay
         End If
     End Function
 
-    Sub ResetItemList()
+    Public Sub ResetItemList()
         For i As Integer = 0 To UBound(ItemList)
             ItemList(i).Dispose()
         Next
@@ -169,7 +169,7 @@ Public Class OAEDisplay
         ReDim ItemList(0)
     End Sub
 
-    Sub fPaintForm()
+    Public Sub fPaintForm()
         For i As Integer = 0 To UBound(ItemList)
             bDrawItem(ItemList(i))
         Next
@@ -177,7 +177,7 @@ Public Class OAEDisplay
         FormGrap.DrawImage(CacheBmp, 0, 0)
     End Sub
 
-    Sub Dispose()
+    Public Sub Dispose()
         ResetItemList()
 
         CacheBmp.Dispose()
@@ -185,7 +185,7 @@ Public Class OAEDisplay
         FormGrap.Dispose()
     End Sub
 
-    Sub EventOccur(ByRef Item As OAEItem, ByVal EventType As String)
+    Private Sub EventOccur(ByRef Item As OAEItem, ByVal EventType As String)
         If EventType = "Hover" Then
             Item.EventCallArgs.InvokeFunction.Invoke(Item.EventCallArgs.OnHover)
         ElseIf EventType = "Click" Then
