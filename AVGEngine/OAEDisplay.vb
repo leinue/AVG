@@ -121,6 +121,24 @@ Public Class OAEDisplay
             If InRectangle(New Point(e.X, e.Y), ItemList(i).Position) Then
                 If ItemList(i).Status <> "Hover" Then
                     ItemList(i).Status = "Hover"
+                    EventOccur(ItemList(i), "Hover")
+                    fPaintForm()
+                End If
+            Else
+                If ItemList(i).Status <> "Normal" Then
+                    ItemList(i).Status = "Normal"
+                    fPaintForm()
+                End If
+            End If
+        Next
+    End Sub
+
+    Sub eMouseDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.MouseEventArgs)
+        For i As Integer = 0 To UBound(ItemList)
+            If InRectangle(New Point(e.X, e.Y), ItemList(i).Position) Then
+                If ItemList(i).Status <> "Click" Then
+                    ItemList(i).Status = "Click"
+                    EventOccur(ItemList(i), "Click")
                     fPaintForm()
                 End If
             Else
@@ -144,10 +162,34 @@ Public Class OAEDisplay
     End Function
 
     Sub ResetItemList()
+        For i As Integer = 0 To UBound(ItemList)
+            ItemList(i).Dispose()
+        Next
+
         ReDim ItemList(0)
     End Sub
 
     Sub fPaintForm()
+        For i As Integer = 0 To UBound(ItemList)
+            bDrawItem(ItemList(i))
+        Next
 
+        FormGrap.DrawImage(CacheBmp, 0, 0)
+    End Sub
+
+    Sub Dispose()
+        ResetItemList()
+
+        CacheBmp.Dispose()
+        BmpGrap.Dispose()
+        FormGrap.Dispose()
+    End Sub
+
+    Sub EventOccur(ByRef Item As OAEItem, ByVal EventType As String)
+        If EventType = "Hover" Then
+            Item.EventCallArgs.InvokeFunction.Invoke(Item.EventCallArgs.OnHover)
+        ElseIf EventType = "Click" Then
+            Item.EventCallArgs.InvokeFunction.Invoke(Item.EventCallArgs.OnClick)
+        End If
     End Sub
 End Class
