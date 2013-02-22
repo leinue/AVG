@@ -3,7 +3,7 @@
 Public Class OAEDisplay
     Public IgnoreError As Boolean = False
 
-    Public ItemList() As OAEItem
+    Public ItemList(1) As OAEItem
     Public GameForm As Form
     Dim CacheBmp As Bitmap
     Dim BmpGrap As Graphics
@@ -16,6 +16,17 @@ Public Class OAEDisplay
         AddHandler GameForm.Paint, AddressOf fPaintForm
         AddHandler GameForm.MouseMove, AddressOf eMouseMove
         AddHandler GameForm.MouseDown, AddressOf eMouseDown
+    End Sub
+
+    Sub Init(ByVal Width As Integer, ByVal Height As Integer)
+        GameForm.Height = Height
+        GameForm.Width = Width
+
+        ResetItemList()
+
+        CacheBmp = New Bitmap(Width, Height)
+        BmpGrap = Graphics.FromImage(CacheBmp)
+        FormGrap = Graphics.FromHwnd(GameForm.Handle)
     End Sub
 
     Sub bDrawItem(ByRef Item As OAEItem)
@@ -42,8 +53,8 @@ Public Class OAEDisplay
                 Text.Font.Brush = Item.Text.NormalText.Font.Brush
             End If
 
-                DrawText(BmpGrap, Text, Item.Position)
-            End If
+            DrawText(BmpGrap, Text, Item.Position)
+        End If
 
 
         If Item.Type = "Image" Then
@@ -77,8 +88,10 @@ Public Class OAEDisplay
 
     Sub DrawImage(ByRef Grap As Graphics, ByRef Image As OAEItemImage, ByVal range As Rectangle)
         If Image.Effect.Transparent.Enable = True Then
-            Dim ImageAttrs As ImageAttributes
-
+            Dim ImageAtt As ImageAttributes = ImageApplyTransp(Image.Effect.Transparent.Transparent)
+            Grap.DrawImage(Image.Image, range, 0, 0, Image.Image.Width, Image.Image.Height, GraphicsUnit.Pixel, ImageAtt)
+        Else
+            Grap.DrawImage(Image.Image, range)
         End If
     End Sub
 
@@ -102,4 +115,39 @@ Public Class OAEDisplay
 
         Return imageAttr
     End Function
+
+    Sub eMouseMove(ByVal sender As System.Object, ByVal e As System.Windows.Forms.MouseEventArgs)
+        For i As Integer = 0 To UBound(ItemList)
+            If InRectangle(New Point(e.X, e.Y), ItemList(i).Position) Then
+                If ItemList(i).Status <> "Hover" Then
+                    ItemList(i).Status = "Hover"
+                    fPaintForm()
+                End If
+            Else
+                If ItemList(i).Status <> "Normal" Then
+                    ItemList(i).Status = "Normal"
+                    fPaintForm()
+                End If
+            End If
+        Next
+    End Sub
+
+    Function InRectangle(ByVal Point As Point, ByVal Rectangle As Rectangle) As Boolean
+        If Rectangle.X < Point.X And _
+            Point.X < (Rectangle.X + Rectangle.Width) And _
+            Rectangle.Y < Point.Y And _
+            Point.Y < (Rectangle.Y + Rectangle.Height) Then
+            Return True
+        Else
+            Return False
+        End If
+    End Function
+
+    Sub ResetItemList()
+        ReDim ItemList(0)
+    End Sub
+
+    Sub fPaintForm()
+
+    End Sub
 End Class
