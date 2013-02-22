@@ -44,8 +44,10 @@ Public Structure OAEItemImage
     Dim Effect As OAEImageEffect
 End Structure
 
+Public Delegate Sub EventReceive(ByVal EventArgs As String)
 
 Public Structure OAEEventCallArgs
+    Dim InvokeFunction As EventReceive
     Dim OnClick As String
     Dim OnHover As String
 End Structure
