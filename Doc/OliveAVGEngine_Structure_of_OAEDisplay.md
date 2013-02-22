@@ -16,8 +16,8 @@ Olive AVG Engine Project - [Homepage](https://github.com/leinue/AVG)
 > - *Public* OAEItem: **ItemList()** # 储存Item的数组
 > - *Public* Form: **GameForm** # 目标绘制窗口
 > - Bitmap: **CacheBmp** # 缓存Bmp，程序先通过
-> - Graphics: **BmpGrap** # 从**CacheBmp**创建的Graphics对象，用于在缓存Bmp上绘制
-> - Graphics: **FormGrap** # 从**GameForm**创建的Graphics对象，用于在窗口上直接绘制
+> - Graphics: **BmpGrap** # 从 **CacheBmp** 创建的Graphics对象，用于在缓存Bmp上绘制
+> - Graphics: **FormGrap** # 从 **GameForm** 创建的Graphics对象，用于在窗口上直接绘制
 
 
 由于本模块是以Item为单位绘制图像的，所以必须有 `OAEItem` 储存每个Item的信息。
@@ -106,18 +106,18 @@ Olive AVG Engine Project - [Homepage](https://github.com/leinue/AVG)
 ####2.本模块中的方法
 
 > - `OAEDisplay` Class
-> - *Sub* : **New**(Form : &**Form**) # 给**GameForm**赋值，建立各种事件与本模块中方法的链接。
-> - *Sub* : **Init**(Integer : **Width** ,Integer : **Height**) # 通过窗体宽和高初始化**CacheBmp**，重置ItemList，同时初始化**FormGrap**和**BmpGrap**。
-> - Handle Form.Paint *Public Sub* : **fPaintForm** # 往 **GameForm** 上绘制全部的ItemList
-> - *Sub* : **bDrawItem**(OAEItem: &**Item**) # 往 **CacheBmp** 上绘制一个Item
-> - *Sub* : **DrawText**(Graphics: &**Grap** ,String: **Text**, OAETextEffect: **Effect**) # 往**Grap**上绘制文本
-> - *Sub* : **DrawImage**(Graphics: &**Grap** ,Image: &**Image**) # 往**Grap**上绘制文本
-> - *Function* : **ImageApplyTransp**(Integer: **Transparent**) ImageAttrbutes # 通过透明度创建ImageAttrbutes *（这个函数是临时放这里的，如果将来有别的特效，会重写特效方面函数）*
-> - *Sub* : **EventOccur**(OAEItem: **Item** ,String: **EventType**) # 调用 *脚本解析与执行模块* 中处理Event的函数，并将Item中的**EventCallArgs**中的参数传递给处理函数。
-> - Handle Form.MouseMove *Sub* : **eMouseMove**(System.object: **sender** ,System.Windows.Forms.MouseEventArgs: **e**) # 处理窗体鼠标移动事件的方法，负责检查鼠标移动对每个Item的影响，负责选择性重绘，并且会调用**EventOccur**。
-> - Handle Form.MouseDown *Sub* : **eMouseDown**(System.object: **sender** ,System.Windows.Forms.MouseEventArgs: **e**) # 处理窗体鼠标点击事件的方法，负责检查鼠标移动对每个Item的影响，负责选择性重绘，并且会调用**EventOccur**。
-> - Handle Form.Closing *Sub* **Dispose**() # 销毁一切Item，Graphics，Bitmap并释放资源。
-> - *Sub* : **AddItem**(OAEItem : **Item**) # 把一个Item加入ItemList。
-> - *Sub* : **DeleteItem**(String : **ItemName**) # 销毁一个Item并释放资源。
-> - *Sub* : **ResetItemList**() # 清除ItemList中任何元素并且释放资源。
+> - *Sub* : **New** (Form : &**Form**) # 给 **GameForm** 赋值，建立各种事件与本模块中方法的链接。
+> - *Sub* : **Init** (Integer : **Width** ,Integer : **Height**) # 通过窗体宽和高初始化 **CacheBmp** ，重置 **ItemList** ，同时初始化 **FormGrap** 和 **BmpGrap** 。
+> - Handle Form.Paint *Public Sub* : **fPaintForm** # 往 **GameForm** 上绘制整个 **ItemList**。
+> - *Sub* : **bDrawItem** (OAEItem: & **Item** ) # 往 **CacheBmp** 上绘制一个Item
+> - *Sub* : **DrawText** (Graphics: & **Grap** ,String: **Text** , OAETextEffect: **Effect** ) # 往 **Grap** 上绘制文本
+> - *Sub* : **DrawImage** (Graphics: & **Grap** ,Image: & **Image** ) # 往 **Grap** 上绘制文本
+> - *Function* : **ImageApplyTransp** (Integer: **Transparent** ) ImageAttrbutes # 通过透明度创建ImageAttrbutes *（这个函数是临时放这里的，如果将来有别的特效，会重写特效方面函数）*
+> - *Sub* : **EventOccur** (OAEItem: **Item** ,String: **EventType** ) # 调用 *脚本解析与执行模块* 中处理Event的函数，并将Item中的**EventCallArgs**中的参数传递给处理函数。
+> - Handle Form.MouseMove *Sub* : **eMouseMove** (System.object: **sender** ,System.Windows.Forms.MouseEventArgs: **e** ) # 处理窗体鼠标移动事件的方法，负责检查鼠标移动对每个Item的影响，负责选择性重绘，并且会调用 **EventOccur** 。
+> - Handle Form.MouseDown *Sub* : **eMouseDown** (System.object: **sender** ,System.Windows.Forms.MouseEventArgs: **e** ) # 处理窗体鼠标点击事件的方法，负责检查鼠标移动对每个Item的影响，负责选择性重绘，并且会调用 **EventOccur** 。
+> - Handle Form.Closing *Sub* **Dispose** () # 销毁一切Item，Graphics，Bitmap并释放资源。
+> - *Sub* : **AddItem** (OAEItem : **Item** ) # 把一个Item加入ItemList。
+> - *Sub* : **DeleteItem** (String : **ItemName** ) # 销毁一个Item并释放资源。
+> - *Sub* : **ResetItemList** () # 清除ItemList中任何元素并且释放资源。
 
