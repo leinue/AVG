@@ -1,54 +1,76 @@
-﻿Public Structure OAEItem
-    'General Info
-    Dim name As String
-    Dim type As String
+﻿Public Class OAEItem
+    Public Name As String
+    Public Type As String
+    Public Status As String
+    Public Position As Rectangle
+    Public Visible As Boolean
+    Public Text As OAETextItem
+    Public Image As OAEImageItem
+    Public EventCallArgs As OAEEventCallArgs
 
+    Public Sub Dispose()
+        Image.HoverImage.Image.Dispose()
+        Image.NormalImage.Image.Dispose()
+        Image.ClickImage.Image.Dispose()
+        Text.NormalText.Font.Font.Dispose()
+        Text.NormalText.Font.Brush.Dispose()
+        Text.HoverText.Font.Font.Dispose()
+        Text.HoverText.Font.Brush.Dispose()
+        Text.ClickText.Font.Font.Dispose()
+        Text.ClickText.Font.Brush.Dispose()
+    End Sub
+End Class
 
-    'Location Info
-    Dim locX As Integer
-    Dim locY As Integer
-    Dim height As Integer
-    Dim width As Integer
-
-
-    'Action Info
-    Dim ClickAction As String
-    Dim HoverAction As String
-
-
-    'Attributes of Image
-    Dim NormalImage As String
-    Dim HoverImage As String
-    Dim ClickImage As String
-
-
-    'Attributes of Text
-    Dim NormalText As String
-    Dim HoverText As String
-    Dim ClickText As String
-
-    Dim NormalFont As String
-    Dim HoverFont As String
-    Dim ClickFont As String
-
-    Dim TextMaxWidth As String
-    Dim TextMaxHeight As String
-
-    Dim visible As Boolean
+Public Structure OAETextItem
+    Dim NormalText As OAEItemText
+    Dim HoverText As OAEItemText
+    Dim ClickText As OAEItemText
 End Structure
-Public Structure OAEScene
-    Dim name As String
-    Dim bgImage As String
-    Dim bgMusic As String
-    Dim itemList As String
-End Structure
-Public Structure OAEInitInfo
-    Dim width As Integer
-    Dim height As Integer
 
-    Dim gameName As String
-    Dim author As String
+Public Structure OAEItemText
+    Dim Text As String
+    Dim Font As OAEFont
+    Dim Effect As OAETextEffect
 End Structure
-Public Structure OAEWindowAttr
-    Dim included As String
+
+Public Structure OAEImageItem
+    Dim NormalImage As OAEItemImage
+    Dim HoverImage As OAEItemImage
+    Dim ClickImage As OAEItemImage
+End Structure
+
+Public Structure OAEItemImage
+    Dim Image As Image
+    Dim Effect As OAEImageEffect
+End Structure
+
+
+Public Structure OAEEventCallArgs
+    Dim OnClick As String
+    Dim OnHover As String
+End Structure
+
+Public Structure OAEFont
+    Dim Font As Font
+    Dim Brush As SolidBrush
+End Structure
+
+Public Structure OAETextEffect
+    Dim Shadow As OAEEffectShadow
+End Structure
+
+Public Structure OAEImageEffect
+    Dim Shadow As OAEEffectShadow
+    Dim Transparent As OAEEffectTransp
+End Structure
+
+Public Structure OAEEffectShadow
+    Dim Enable As Boolean
+    Dim Offset As Integer
+    Dim Font As OAEFont
+End Structure
+
+Public Structure OAEEffectTransp
+    Dim Enable As Boolean
+    Dim Transparent As Integer
 End Structure
