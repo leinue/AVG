@@ -108,7 +108,7 @@ Olive AVG Engine Project - [Homepage](https://github.com/leinue/AVG)
 
 > - `OAEDisplay` Class
 
-> - *Construct* *Sub* : **New** (Form : &**Form**) # 给 **GameForm** 赋值，建立各种事件与本模块中方法的链接。
+> - *Construct* *Sub* : **New** (Form : & **Form** ) # 给 **GameForm** 赋值，建立各种事件与本模块中方法的链接。
 
 > - *Sub* : **Init** (Integer : **Width** ,Integer : **Height**) # 通过窗体宽和高初始化 **CacheBmp** ，重置 **ItemList** ，同时初始化 **FormGrap** 和 **BmpGrap** 。
 
@@ -155,7 +155,7 @@ Olive AVG Engine Project - [Homepage](https://github.com/leinue/AVG)
 
 1. 调用GetItem获取旧Item。
 2. 修改Item。
-3. 调用AddItem把Item修改过的Item添加进去。 *注：过程中不需要 ** DeleteItem ** 。*
+3. 调用AddItem把Item修改过的Item添加进去。 *注：过程中不需要 **DeleteItem**。*
 4. 调用FormPaint，重绘界面。
 
 ##### 清除界面准备重新绘制
