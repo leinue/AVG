@@ -13,7 +13,7 @@ Public Class OAEDisplay
         GameForm = Form
 
         AddHandler GameForm.FormClosing, AddressOf Dispose
-        AddHandler GameForm.Paint, AddressOf fPaintForm
+        AddHandler GameForm.Paint, AddressOf PaintForm
         AddHandler GameForm.MouseMove, AddressOf eMouseMove
         AddHandler GameForm.MouseDown, AddressOf eMouseDown
     End Sub
@@ -29,7 +29,7 @@ Public Class OAEDisplay
         FormGrap = Graphics.FromHwnd(GameForm.Handle)
     End Sub
 
-    Private Sub bDrawItem(ByRef Item As OAEItem)
+    Private Sub DrawItem(ByRef Grap As Graphics, ByRef Item As OAEItem)
         If Item.Type = "Text" Then
             Dim Text As OAEItemText
             If Item.Status = "Normal" Then
@@ -53,7 +53,7 @@ Public Class OAEDisplay
                 Text.Font.Brush = Item.Text.NormalText.Font.Brush
             End If
 
-            DrawText(BmpGrap, Text, Item.Position)
+            DrawText(Grap, Text, Item.Position)
         End If
 
 
@@ -74,7 +74,7 @@ Public Class OAEDisplay
                 Image.Image = Item.Image.NormalImage.Image
             End If
 
-            DrawImage(BmpGrap, Image, Item.Position)
+            DrawImage(Grap, Image, Item.Position)
         End If
     End Sub
 
@@ -122,12 +122,12 @@ Public Class OAEDisplay
                 If ItemList(i).Status <> "Hover" Then
                     ItemList(i).Status = "Hover"
                     EventOccur(ItemList(i), "Hover")
-                    fPaintForm()
+                    PaintForm()
                 End If
             Else
                 If ItemList(i).Status <> "Normal" Then
                     ItemList(i).Status = "Normal"
-                    fPaintForm()
+                    PaintForm()
                 End If
             End If
         Next
@@ -139,12 +139,12 @@ Public Class OAEDisplay
                 If ItemList(i).Status <> "Click" Then
                     ItemList(i).Status = "Click"
                     EventOccur(ItemList(i), "Click")
-                    fPaintForm()
+                    PaintForm()
                 End If
             Else
                 If ItemList(i).Status <> "Normal" Then
                     ItemList(i).Status = "Normal"
-                    fPaintForm()
+                    PaintForm()
                 End If
             End If
         Next
@@ -169,12 +169,36 @@ Public Class OAEDisplay
         ReDim ItemList(0)
     End Sub
 
-    Public Sub fPaintForm()
+    Public Sub PaintForm()
         For i As Integer = 0 To UBound(ItemList)
-            bDrawItem(ItemList(i))
+            If ItemList(i).Available = True And ItemList(i).Visible = True Then
+                DrawItem(BmpGrap, ItemList(i))
+            End If
         Next
 
         FormGrap.DrawImage(CacheBmp, 0, 0)
+    End Sub
+
+    Public Sub AddItem(ByRef Item As OAEItem)
+        For j As Integer = 0 To UBound(ItemList)
+            If ItemList(j).Name = Item.Name Then
+                ItemList(j) = Item
+            End If
+        Next
+
+        Dim i As Integer = 0
+        While i <= UBound(ItemList)
+            If ItemList(i).Available = False Then
+                ItemList(i) = Item
+                Return
+            End If
+
+            i = i + 1
+        End While
+
+        ReDim Preserve ItemList(2 * ItemList.Length - 1)
+
+        ItemList(i) = Item
     End Sub
 
     Public Sub Dispose()
