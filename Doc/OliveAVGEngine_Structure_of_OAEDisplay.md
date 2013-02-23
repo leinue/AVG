@@ -15,7 +15,7 @@ Olive AVG Engine Project - [Homepage](https://github.com/leinue/AVG)
 > - *Public* Boolean: **IgnoreError** # 是否忽略异常
 > - *Public* OAEItem: **ItemList()** # 储存Item的数组
 > - *Public* Form: **GameForm** # 目标绘制窗口
-> - Bitmap: **CacheBmp** # 缓存Bmp，程序先通过
+> - Bitmap: **CacheBmp** # 缓存Bmp。
 > - Graphics: **BmpGrap** # 从 **CacheBmp** 创建的Graphics对象，用于在缓存Bmp上绘制
 > - Graphics: **FormGrap** # 从 **GameForm** 创建的Graphics对象，用于在窗口上直接绘制
 
@@ -34,6 +34,7 @@ Olive AVG Engine Project - [Homepage](https://github.com/leinue/AVG)
 > - OAETextItem: **Text** #Item显示的文字（仅当 **Type** 为Text时有效）
 > - OAEImageItem: **Image** #Item显示的图像（仅当 **Type** 为Image时有效）
 > - OAEEventCallArgs: **EventCallArgs** #Item产生事件时传递给 *脚本解析与执行模块* 的参数。
+> - Boolean: **Available** # 无效或已销毁时该变量置为False。请在加载Item时将此标记置为True。
 > - **方法：**
 > - *Sub* : **Dispose**() # 销毁一个Item的一切资源，比如Image。
 
@@ -106,18 +107,59 @@ Olive AVG Engine Project - [Homepage](https://github.com/leinue/AVG)
 ####2.本模块中的方法
 
 > - `OAEDisplay` Class
-> - *Sub* : **New** (Form : &**Form**) # 给 **GameForm** 赋值，建立各种事件与本模块中方法的链接。
+
+> - *Construct* *Sub* : **New** (Form : &**Form**) # 给 **GameForm** 赋值，建立各种事件与本模块中方法的链接。
+
 > - *Sub* : **Init** (Integer : **Width** ,Integer : **Height**) # 通过窗体宽和高初始化 **CacheBmp** ，重置 **ItemList** ，同时初始化 **FormGrap** 和 **BmpGrap** 。
-> - Handle Form.Paint *Public Sub* : **fPaintForm** # 往 **GameForm** 上绘制整个 **ItemList**。
-> - *Sub* : **bDrawItem** (OAEItem: & **Item** ) # 往 **CacheBmp** 上绘制一个Item
-> - *Sub* : **DrawText** (Graphics: & **Grap** ,String: **Text** , OAETextEffect: **Effect** ) # 往 **Grap** 上绘制文本
-> - *Sub* : **DrawImage** (Graphics: & **Grap** ,Image: & **Image** ) # 往 **Grap** 上绘制文本
-> - *Function* : **ImageApplyTransp** (Integer: **Transparent** ) ImageAttrbutes # 通过透明度创建ImageAttrbutes *（这个函数是临时放这里的，如果将来有别的特效，会重写特效方面函数）*
+
+> - *Public Sub* : **PaintForm** () Handle Form.Paint  # 往 **GameForm** 上绘制整个 **ItemList**。
+
+> - *Private* *Sub* : **DrawItem** (Graphics: & **Grap** , OAEItem: & **Item** ) # 往 **Grap** 上绘制所给的Item
+
+> - *Private* *Sub* : **DrawText** (Graphics: & **Grap** ,String: **Text** , OAETextEffect: **Effect** ) # 往 **Grap** 上绘制文本
+
+> - *Private* *Sub* : **DrawImage** (Graphics: & **Grap** ,Image: & **Image** ) # 往 **Grap** 上绘制文本
+
+> - *Private* *Function* : **ImageApplyTransp** (Integer: **Transparent** ) ImageAttrbutes # 通过透明度创建ImageAttrbutes *（这个函数是临时放这里的，如果将来有别的特效，会重写特效方面函数）*
+
 > - *Sub* : **EventOccur** (OAEItem: **Item** ,String: **EventType** ) # 调用 *脚本解析与执行模块* 中处理Event的函数，并将Item中的**EventCallArgs**中的参数传递给处理函数。
-> - Handle Form.MouseMove *Sub* : **eMouseMove** (System.object: **sender** ,System.Windows.Forms.MouseEventArgs: **e** ) # 处理窗体鼠标移动事件的方法，负责检查鼠标移动对每个Item的影响，负责选择性重绘，并且会调用 **EventOccur** 。
-> - Handle Form.MouseDown *Sub* : **eMouseDown** (System.object: **sender** ,System.Windows.Forms.MouseEventArgs: **e** ) # 处理窗体鼠标点击事件的方法，负责检查鼠标移动对每个Item的影响，负责选择性重绘，并且会调用 **EventOccur** 。
-> - Handle Form.Closing *Sub* **Dispose** () # 销毁一切Item，Graphics，Bitmap并释放资源。
-> - *Sub* : **AddItem** (OAEItem : **Item** ) # 把一个Item加入ItemList。
-> - *Sub* : **DeleteItem** (String : **ItemName** ) # 销毁一个Item并释放资源。
+
+> - *Sub* : **eMouseMove** (System.object: **sender** ,System.Windows.Forms.MouseEventArgs: **e** ) Handle Form.MouseMove # 处理窗体鼠标移动事件的方法，负责检查鼠标移动对每个Item的影响，负责选择性重绘，并且会调用 **EventOccur** 。
+
+> - *Sub* : **eMouseDown** (System.object: **sender** ,System.Windows.Forms.MouseEventArgs: **e** ) Handle Form.MouseDown # 处理窗体鼠标点击事件的方法，负责检查鼠标移动对每个Item的影响，负责选择性重绘，并且会调用 **EventOccur** 。
+
+> - *Sub* **Dispose** () Handle Form.Closing # 销毁一切Item，Graphics，Bitmap并释放资源。
+
+> - *Sub* : **AddItem** (OAEItem : **Item** ) # 把一个Item加入ItemList。如果有现有Item与该Item重名，则替换旧的Item。
+
+> - *Sub* : **GetItem** (String : **ItemName**) # 通过Item名称获取一个Item。
+
+> - *Sub* : **DeleteItem** (String : **ItemName** ) # 销毁一个Item并释放资源。空Item仍保存在ItemList中。
+
 > - *Sub* : **ResetItemList** () # 清除ItemList中任何元素并且释放资源。
 
+#### 3.如何使用该模块
+
+##### 初始化时
+
+1. 首先创建该对象，创建时把游戏窗体传递给构造函数。
+2. 然后利用窗体的宽和高的设定调用 **Init** 函数，初始化缓存Bmp，Graphics。
+3. 利用AddItem函数加入Item。Item的详细格式，参见本文档第一部分。
+
+##### 过程中添加/删除Item
+
+1. 调用AddItem，添加Item。（调用DeleteItem删除Item）
+2. 调用FormPaint，重绘界面。
+
+##### 过程中修改Item
+
+1. 调用GetItem获取旧Item。
+2. 修改Item。
+3. 调用AddItem把Item修改过的Item添加进去。 *注：过程中不需要**DeleteItem**。*
+4. 调用FormPaint，重绘界面。
+
+##### 清除界面准备重新绘制
+
+1. 调用Init函数重置ItemList。
+2. 重新添加Item。
+3. 调用FormPaint，重绘界面。
