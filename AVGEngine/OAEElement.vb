@@ -7,8 +7,13 @@
     Public Text As OAETextItem
     Public Image As OAEImageItem
     Public EventCallArgs As OAEEventCallArgs
+    Public Available As Boolean
 
     Public Sub Dispose()
+        Name = ""
+        Type = ""
+        Status = ""
+        Visible = False
         Image.HoverImage.Image.Dispose()
         Image.NormalImage.Image.Dispose()
         Image.ClickImage.Image.Dispose()
@@ -18,6 +23,8 @@
         Text.HoverText.Font.Brush.Dispose()
         Text.ClickText.Font.Font.Dispose()
         Text.ClickText.Font.Brush.Dispose()
+
+        Available = False
     End Sub
 End Class
 
