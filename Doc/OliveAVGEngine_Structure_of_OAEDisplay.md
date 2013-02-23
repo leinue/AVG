@@ -155,7 +155,7 @@ Olive AVG Engine Project - [Homepage](https://github.com/leinue/AVG)
 
 1. 调用GetItem获取旧Item。
 2. 修改Item。
-3. 调用AddItem把Item修改过的Item添加进去。 *注：过程中不需要**DeleteItem**。*
+3. 调用AddItem把Item修改过的Item添加进去。 *注：过程中不需要 ** DeleteItem ** 。*
 4. 调用FormPaint，重绘界面。
 
 ##### 清除界面准备重新绘制
