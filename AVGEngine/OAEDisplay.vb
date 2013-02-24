@@ -39,7 +39,7 @@ Public Class OAEDisplay
             ElseIf Item.Status = "Click" Then
                 Text = Item.Text.ClickText
             Else
-                If IgnoreError = False Then Throw New Exception("(bDrawItem)Illegal Status:" + Item.Status)
+                If IgnoreError = False Then Throw New Exception("(OAEDisplay)(DrawItem)Illegal Status:" + Item.Status)
                 Text = New OAEItemText
             End If
 
@@ -66,7 +66,7 @@ Public Class OAEDisplay
             ElseIf Item.Status = "Click" Then
                 Image = Item.Image.ClickImage
             Else
-                If IgnoreError = False Then Throw New Exception("(bDrawItem)Illegal Status:" + Item.Status)
+                If IgnoreError = False Then Throw New Exception("(OAEDisplay)(DrawItem)Illegal Status:" + Item.Status)
                 Image = New OAEItemImage
             End If
 
@@ -97,7 +97,7 @@ Public Class OAEDisplay
 
     Private Function ImageApplyTransp(ByVal Transparent As Integer) As ImageAttributes
         If Transparent > 225 Then
-            If IgnoreError = False Then Throw New Exception("(ImageApplyTransp)Illegal Transparent:" + Transparent)
+            If IgnoreError = False Then Throw New Exception("(OAEDisplay)(ImageApplyTransp)Illegal Transparent:" + Transparent)
         End If
         Dim matrixItems As Single()() = { _
            New Single() {1, 0, 0, 0, 0}, _
@@ -199,6 +199,17 @@ Public Class OAEDisplay
         ReDim Preserve ItemList(2 * ItemList.Length - 1)
 
         ItemList(i) = Item
+    End Sub
+
+    Public Sub DeleteItem(ByVal Name As String)
+        For j As Integer = 0 To UBound(ItemList)
+            If ItemList(j).Name = Name Then
+                ItemList(j).Dispose()
+                Return
+            End If
+        Next
+
+        If IgnoreError = False Then Throw New Exception("(OAEDisplay)(ImageApplyTransp)Try to delete an nonexistent item:" + Name)
     End Sub
 
     Public Sub Dispose()
