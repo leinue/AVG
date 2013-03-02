@@ -95,7 +95,7 @@ If...else是OAS中的判断结构。下面是一个简单的演示：
     @Hello:5
     @World:0
     
-    [If]:@Hello = 5 {
+    If:@Hello = 5 {
         @World:1
     }
 
@@ -108,10 +108,10 @@ If...else是OAS中的判断结构。下面是一个简单的演示：
     @Hello:6
     @World:0
     
-    [If]:@Hello = 5 {
+    If:@Hello = 5 {
         @World:1
     }
-    [Else]{
+    Else:{
         @World:2
     }
 
