@@ -99,6 +99,7 @@
     </Compile>
     <Compile Include="OAEElement.vb" />
     <Compile Include="OAEUSDescriber.vb" />
+    <Compile Include="OASOperation.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Form1.resx">
