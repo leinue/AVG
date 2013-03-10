@@ -140,6 +140,8 @@ Olive AVG Engine Project - [Homepage](https://github.com/leinue/AVG)
 
 #### 3.如何使用该模块
 
+*注：出于效率考虑，该模块只会在窗口出现OnPaint事件时自动重绘，在其他任何情况下，如果没有调用FormPaint方法，窗口不会重绘。*
+
 ##### 初始化时
 
 1. 首先创建该对象，创建时把游戏窗体传递给构造函数。
@@ -154,8 +156,7 @@ Olive AVG Engine Project - [Homepage](https://github.com/leinue/AVG)
 ##### 过程中修改Item
 
 1. 调用GetItem获取旧Item。
-2. 修改Item。
-3. 调用AddItem把Item修改过的Item添加进去。 *注：过程中不需要 **DeleteItem**。*
+2. 修改Item。（基于.Net的特性，对象会被以引用的形式传递。）
 4. 调用FormPaint，重绘界面。
 
 ##### 清除界面准备重新绘制

@@ -9,12 +9,14 @@ Olive AVG Engine Project - [Homepage](https://github.com/leinue/AVG)
 
 > `OASEngine` Class  
 > **字段：**   
-> *OASDataStack*: **DataStack** #全局数据储存模块
+> *OASDataStack*: **DataStack** # 数据栈，实现OAS的栈机制  
+> *OASOperation*: **Operation** # 储存脚本中的全部指令  
+> *OpPtr*: **EventCallOp[]** # 储存当用户事件发生时执行的操作。每个Event全局有效。 
 
 工作主要流程：
 
 1. 读入脚本，将脚本转换成一个OpBlock。
-2. 调用OASOp中的DoOpBlock，将DataStack传递过去，令其解读第一步返回的OpBlock并且将数据全部储存入Data。此时，在DoOpBlock中执行过的代码不会再继续存入DataStack。
+2. 调用OASOp中的DoOpBlock.
 
 ## Part 2 OASOperation
 
@@ -22,11 +24,12 @@ Olive AVG Engine Project - [Homepage](https://github.com/leinue/AVG)
 
 > `OASOperation` Class  
 > **字段：**  
-> 无。  
+> *OASData*: **Data**     
 > **方法：**  
-> *Public Sub* **DoOpBlock** ( *OpBlock* , *OASDataStack* ) # 执行一个OpBlock，将改动写入所提供的OASDataStack。  
-> *Public Sub* **DoOpSingle** ( *OpSingle* , *OASDataStack* ) # 执行一条OpSingle，将改动写入所提供的OASDataStack。  
-> *Public Function*  **GetPackedOp** ( *StreamReader* ) *OpBlock* # 将文本格式的脚本打包成Op，并返回一个OpBlock。
+> *Public Sub* **New** ( *OASDataStack* )  # 构造函数  
+> *Public Sub* **DoOpBlock** ( *OpBlock* , *ParaOnCall* ) # 执行一个OpBlock，将改动写入所提供的OASDataStack。  
+> *Public Sub* **DoOpSingle** ( *OpSingle* ) # 执行一条OpSingle，将改动写入所提供的OASDataStack。  
+> *Public Function*  **LoadScript** ( *StreamReader* ) *OpBlock* # 将文本格式的脚本打包成Op，存入Data，并执行一遍（定义Action……）。
 
 #### 3.1 OASOperation中的Structure
 
@@ -54,7 +57,7 @@ Olive AVG Engine Project - [Homepage](https://github.com/leinue/AVG)
 
 ---
 
-> `OpList` Structure # 一个包装了OpBlock数组和OpSingle数组的结构  
+> `OpTable` Structure # 一个包装了OpBlock数组和OpSingle数组的结构  
 > **字段：**  
 > *OpBlock*: **OpBlock[]**  
 > *OpSingle*: **OpSingle[]**  
@@ -68,9 +71,8 @@ Olive AVG Engine Project - [Homepage](https://github.com/leinue/AVG)
 
 > `Parameter` Structure # 用于储存一个操作的参数（形参或者实参）  
 > **字段：**   
-> *String*: **DefParaN[]** # 定义时的形参名称   
-> *String*: **DefParaT[]** # 定义时的形参类型 
-> *ParaOnCall*: **CallPara[]** # 调用时的参数表达式
+> *ParaOnDef*: **DefPara[]** # 定义时的形参列表  
+> *ParaOnCall*: **CallPara[]** # 调用时的实参列表
 
 ---
 
@@ -79,32 +81,87 @@ Olive AVG Engine Project - [Homepage](https://github.com/leinue/AVG)
 > *String*: **Name** # 实参的名称  
 > *OASExpr*: **Expr** # 实参的表达式  
 
+---
+
+> `ParaOnDef` Structure # 储存定义Action时的形参  
+> *String*: **Name**  
+> *String*: **Type**  
+
 ## Part 3 OASExpr
 
 用于储存和处理OAS中的表达式。
 
+> `OAEExpr` Structure  
+> **字段：**  
+> *OASDataStack*: **DataStack**  
+> *ExprE*: **ExprElement[]** # 用于储存表达式的单个元素  
+> *ExprB*: **ExprBlock[]** # 用于储存一个括号的内容  
+> **方法：**  
+> *Sub*: **CreateByString** ( *String* , *OASDataStack* ) 通过字符串创建一个表达式  
+> *Function*: **Caculate** ()
 
+---
 
+> `ExprB` Structure
 
-## Part 4 OASDataStack
+## Part 4 OASData
 
 保存脚本执行过程中的数据。例如OpList，Action，Var等。
 
-> `OASDataStack` Structure # 数据栈管理机制。具有push和pop的功能  
-> *Int*: **Ptr** # 当前操作的数据栈数组的下标。  
-> *OpList*: **OpList** # 储存运行过程中的全部Op。  
-> *OASData*:　**Data[]** # 数据栈的核心，随花括号嵌套出栈入栈。当Ptr为0时不再退栈。
-
 > `OASData` Structure  
 > **字段：**  
-> *Action*: **ActList[]** # 储存运行中定义的Action。  
-> *Var*: **VarList[]** # 储存运行中定义的Var。  
->　*OpPtr*: **EventCallOp** # 储存当用户事件发生时执行的操作。  
+> *OpTable*: **OpTable** # 储存运行过程中的全部Op。 
+> *OASVarTable* ： **VarTable** # 用于存放每个Var的真实数据。该类型不储存Var名称，只储存Var的值。通过Index可以访问这里的内容。
+> *OASDataStack* : **DataStack** # 数据栈，用于实现Action的栈机制。
 > **方法：**  
-> *Function* **DoAction** ( *String* Name , *ParaOnCall* Para[] ) *String* ReturnVal # 执行指定的Action。  
-> *Sub* **AddAction** ( *String* Name , *OpPtr* Ptr ) # 把Ptr所指的Action代码块加入ActList。
 > *Function* **GetVar** ( *String* Name ) *String* VarVal # 获取名为Name的变量的值。  
 > *Sub* **SetVar** ( *String* Name ， *String* Val ) # 把名为Name的变量的值设置为Val。如果变量不存在，则新建一个。
+
+> `OASDataStack` Structure # 数据栈管理机制。具有push和pop的功能  
+> *Int*: **Ptr** # 当前操作的数据栈数组的下标。  
+> *StackElement*:　**Data[]** # 数据栈的核心，随花括号嵌套出栈入栈。当Ptr为0时不再退栈。
+
+> `StackElement` Structure # 每个栈元素  
+> **字段：**  
+> *OASActionL*: **ActList** # 储存运行中定义的Action。  
+> *OASVarL*: **VarList** # 储存运行中定义的Var。
+
+## Part 5 OASActionL & Action
+
+> `OASActionL` Structure # OAS Action List  
+> **字段：**  
+> **方法：**  
+> *Function* **DoAction** ( *String* Name , *ParaOnCall* Para[] ) *String* ReturnVal # 执行指定的Action。并且映射参数。  
+> *Sub* **AddAction** ( *String* Name , *OpPtr* Ptr ) # 把Ptr所指的Action代码块加入ActList。
+
+## Part6 Var & OASVarL
+
+> `OASVarL` Structure # 这个Structure放在DataStack中。  
+> **字段：**  
+> *VarPtr* : **Ptr**[] # 指向Var的指针们  
+> **方法：**  
+> *Public Function* **GetVarPtr** ( *String* VarName ) # 获得一个Var在VarTable中的指针。
+> *Public Function* **GetVarDataByName** ( *String* VarName ) # 获得一个Var的数据。
+
+> `OASVarTable` Structure # 这个Structure直接放在Data类中。  
+> **字段：**  
+> *Var* : **Vars**[] # 存放Var的数组。  
+> **方法：**  
+> *Public Function* **GetVarDataByPtr** ( *Integer* Index )
+
+> `Var` Structure  
+> **字段：**  
+> *String* : **Type** # 该Var的类型  
+> *String* : **Data** # 该Var的数据
+> *Boolean* : **IfRef** # 该Var是否是引用指针。这个字段目的是在退栈时把该层所有var的available置为False时，辨认是否该Var是引用，若是，则不销毁所指向的内容。
+
+> `VarPtr` Structure  
+> **字段：**  
+> *String* : Name  
+> *Integer* : Index # 在VarTable中的索引  
+> **方法：**  
+> *Public Function* **GetVarData** () *Var* # 获得一个Var的数据。
+
 
 ## 附录 术语
 
